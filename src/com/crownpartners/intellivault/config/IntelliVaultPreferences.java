@@ -24,6 +24,7 @@ public class IntelliVaultPreferences implements Serializable {
     public String tempDirectory;
     public String rootFolderName;
     public boolean verbose;
+    public boolean showDialogs;
     public boolean debug;
     public boolean logToConsole;
     public List<String> fileIgnorePatterns;
@@ -42,6 +43,7 @@ public class IntelliVaultPreferences implements Serializable {
 
         this.verbose = operationConfig.isVerbose();
         this.debug = operationConfig.isDebug();
+        this.showDialogs = operationConfig.showMessageDialogs();
         this.logToConsole = operationConfig.isLogToConsole();
 
         this.fileIgnorePatterns = operationConfig.getFileIgnorePatterns();
@@ -64,6 +66,7 @@ public class IntelliVaultPreferences implements Serializable {
         operationConfig.setVerbose(this.verbose);
         operationConfig.setLogToConsole(this.logToConsole);
         operationConfig.setDebug(this.debug);
+        operationConfig.setShowMessageDialogs(this.showDialogs);
 
         operationConfig.setFileIgnorePatterns(this.fileIgnorePatterns);
 

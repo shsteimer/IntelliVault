@@ -80,14 +80,17 @@ public class IntelliVaultExportAction extends IntelliVaultAbstractAction {
             final IntelliVaultService vaultService = getVaultService();
             try {
                 vaultService.vaultExport(repository, conf, vaultOpDir, progressIndicator, console);
-                ApplicationManager.getApplication().invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        Messages.showInfoMessage(String.format("Successfully Exported from %s.",
-                                new Object[]{repository.getRepoUrl() + vaultOpDir.getJcrPath()}),
-                                "IntelliVault Export Completed Successfully!");
-                    }
-                });
+
+                if (conf.showMessageDialogs()) {
+                    ApplicationManager.getApplication().invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            Messages.showInfoMessage(String.format("Successfully Exported from %s.",
+                                    new Object[]{repository.getRepoUrl() + vaultOpDir.getJcrPath()}),
+                                    "IntelliVault Export Completed Successfully!");
+                        }
+                    });
+                }
             } catch (final IntelliVaultException e) {
                 ApplicationManager.getApplication().invokeLater(new Runnable() {
                     @Override

@@ -30,7 +30,7 @@ public class IntelliVaultImportAction extends IntelliVaultAbstractAction {
     @Override
     protected Task getTask(VaultOperationDirectory vaultOpDir, IntelliVaultOperationConfig conf,
                            IntelliVaultCRXRepository repository, Project project) {
-        return new IntelliVaultImportTask(vaultOpDir,conf,repository,project);
+        return new IntelliVaultImportTask(vaultOpDir, conf, repository, project);
     }
 
     protected String getDialogMessage() {
@@ -51,16 +51,16 @@ public class IntelliVaultImportAction extends IntelliVaultAbstractAction {
          * Construct the Instance to be executed.
          *
          * @param vaultOpDir the Vault Operation Directory
-         * @param conf the Vault Configuration Options
+         * @param conf       the Vault Configuration Options
          * @param repository the CRX Repository to import into
-         * @param project the IntelliJ Project
+         * @param project    the IntelliJ Project
          */
         public IntelliVaultImportTask(VaultOperationDirectory vaultOpDir, IntelliVaultOperationConfig conf,
                                       IntelliVaultCRXRepository repository, Project project) {
-            super(project,"Running IntelliVault Import Action");
-            this.conf=conf;
-            this.repository=repository;
-            this.vaultOpDir=vaultOpDir;
+            super(project, "Running IntelliVault Import Action");
+            this.conf = conf;
+            this.repository = repository;
+            this.vaultOpDir = vaultOpDir;
 
             TextConsoleBuilderFactory factory = TextConsoleBuilderFactory.getInstance();
             this.console = factory.createBuilder(project).getConsole();
@@ -68,7 +68,7 @@ public class IntelliVaultImportAction extends IntelliVaultAbstractAction {
             ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
             String twId = "IntelliVault";
             ToolWindow toolWindow = toolWindowManager.getToolWindow(twId);
-            if(toolWindow==null) {
+            if (toolWindow == null) {
                 toolWindow = toolWindowManager.registerToolWindow(twId, true, ToolWindowAnchor.BOTTOM);
             }
 
@@ -92,16 +92,20 @@ public class IntelliVaultImportAction extends IntelliVaultAbstractAction {
         public void run(@NotNull ProgressIndicator progressIndicator) {
             IntelliVaultService vaultService = getVaultService();
             try {
-                vaultService.vaultImport(repository, conf, vaultOpDir,progressIndicator, console);
-                ApplicationManager.getApplication().invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        Messages.showInfoMessage(String.format("Successfully Imported to %s.",
-                                new Object[]{repository.getRepoUrl() + vaultOpDir.getJcrPath()}),
-                                "IntelliVault Import Completed Successfully!");
-                    }
-                });
-            } catch (final IntelliVaultException e) {
+                vaultService.vaultImport(repository, conf, vaultOpDir, progressIndicator, console);
+                if (conf.showMessageDialogs()) {
+                    ApplicationManager.getApplication().invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            Messages.showInfoMessage(String.format("Successfully Imported to %s.",
+                                            new Object[]{repository.getRepoUrl() + vaultOpDir.getJcrPath()}),
+                                    "IntelliVault Import Completed Successfully!"
+                            );
+                        }
+                    });
+                }
+            }
+            catch (final IntelliVaultException e) {
                 ApplicationManager.getApplication().invokeLater(new Runnable() {
                     @Override
                     public void run() {
