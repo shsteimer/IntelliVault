@@ -20,6 +20,7 @@ public class IntelliVaultOperationConfig {
     private boolean debug;
     private boolean logToConsole;
     private List<String> fileIgnorePatterns;
+    private boolean showMessageDialogs;
 
     /**
      * Create a new instance using the default value for all fields of the operation config
@@ -32,6 +33,7 @@ public class IntelliVaultOperationConfig {
         this.debug=IntelliVaultConfigDefaults.DEBUG;
         this.logToConsole=IntelliVaultConfigDefaults.CONSOLE_LOG;
         this.fileIgnorePatterns = Arrays.asList(IntelliVaultConfigDefaults.IGNORE_PATTERNS.split(","));
+        this.showMessageDialogs = IntelliVaultConfigDefaults.SHOW_MESSAGE_DIALOG;
     }
 
     public String getVaultPath() {
@@ -88,5 +90,13 @@ public class IntelliVaultOperationConfig {
 
     public void setFileIgnorePatterns(List<String> fileIgnorePatterns) {
         this.fileIgnorePatterns = fileIgnorePatterns;
+    }
+
+    public boolean showMessageDialogs() {
+        return showMessageDialogs;
+    }
+
+    public void setShowMessageDialogs(boolean showMessageDialogs) {
+        this.showMessageDialogs = showMessageDialogs;
     }
 }

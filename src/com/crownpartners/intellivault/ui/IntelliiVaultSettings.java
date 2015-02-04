@@ -44,6 +44,7 @@ public class IntelliiVaultSettings implements Configurable {
     private JTextField txtIgnorePatterns;
     private JTextField txtJCRRootDirName;
     private JButton btnRestoreDefaults;
+    private JCheckBox showDialogsCheckBox;
 
     @Nls
     @Override
@@ -146,6 +147,7 @@ public class IntelliiVaultSettings implements Configurable {
         preferencesBean.rootFolderName = txtJCRRootDirName.getText();
 
         preferencesBean.verbose = verboseOutputCheckBox.isSelected();
+        preferencesBean.showDialogs = showDialogsCheckBox.isSelected();
 
         String ignorePatterns = txtIgnorePatterns.getText();
         if (ignorePatterns != null) {
@@ -170,6 +172,7 @@ public class IntelliiVaultSettings implements Configurable {
         txtJCRRootDirName.setText(preferences.rootFolderName);
 
         verboseOutputCheckBox.setSelected(preferences.verbose);
+        showDialogsCheckBox.setSelected(preferences.showDialogs);
 
         StringBuffer buf = new StringBuffer();
         for (String s : preferences.fileIgnorePatterns) {
