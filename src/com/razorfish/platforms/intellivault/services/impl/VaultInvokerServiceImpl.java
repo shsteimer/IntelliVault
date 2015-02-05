@@ -1,5 +1,9 @@
 package com.razorfish.platforms.intellivault.services.impl;
 
+import com.intellij.openapi.diagnostic.Logger;
+import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
+import com.razorfish.platforms.intellivault.services.VaultInvokerService;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -11,14 +15,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
-import com.razorfish.platforms.intellivault.services.VaultInvokerService;
-import com.intellij.openapi.diagnostic.Logger;
-import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
-
 /**
- * Created with IntelliJ IDEA. User: sean.steimer Date: 3/17/13 Time: 9:07 AM To
- * change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: sean.steimer Date: 3/17/13 Time: 9:07 AM To change this template use File |
+ * Settings | File Templates.
  */
 public class VaultInvokerServiceImpl implements VaultInvokerService {
     private static final String VAULT_CLASS = "com.day.jcr.vault.cli.VaultFsApp";
@@ -43,12 +42,11 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
             try {
                 Thread.currentThread().setContextClassLoader(vaultClassLoader);
                 Class<?> vltClass = Class.forName(VAULT_CLASS, true, vaultClassLoader);
-                Method vltMethod = vltClass.getMethod(VAULT_METHOD, new Class[] { new String[0].getClass() });
-                vltMethod.invoke(null, new Object[] { args });
-            }finally {
+                Method vltMethod = vltClass.getMethod(VAULT_METHOD, new Class[] {new String[0].getClass()});
+                vltMethod.invoke(null, new Object[] {args});
+            } finally {
                 Thread.currentThread().setContextClassLoader(cl);
             }
-
 
         } catch (ClassNotFoundException e) {
             throw new IntelliVaultException(e);
@@ -66,14 +64,15 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
 
     @Override
     public void forceReInit() {
-        init=false;
+        init = false;
     }
 
     /**
      * Initialize vault.  Basically finds all the jars in the vault folder and creates a custom class loader which
      * includes those jars.  All vault operations are then executed using that class loader.
-     * @param vaultDir the vault home directory as specified in the settings diaog.
-     *                 Could be the root directory, or potentially the bin or lib directory.
+     *
+     * @param vaultDir the vault home directory as specified in the settings diaog. Could be the root directory, or
+     *                 potentially the bin or lib directory.
      * @throws IOException if an error occurs, sucha s the vault directory not being set.
      */
     private void initVault(String vaultDir) throws IOException {
@@ -83,7 +82,7 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
             }
 
             if (vaultDir.endsWith(BIN)) {
-                vaultDir = vaultDir.substring(0, vaultDir.lastIndexOf(File.separator) - 1);
+                vaultDir = vaultDir.substring(0, vaultDir.lastIndexOf(File.separator));
             }
 
             if (!vaultDir.endsWith(LIB)) {
@@ -102,13 +101,14 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
                     try {
                         libList.add(libs[i].toURI().toURL());
                     } catch (IOException e) {
-                        log.error("error loading lib " + libs[i].getAbsolutePath() ,e);
+                        log.error("error loading lib " + libs[i].getAbsolutePath(), e);
                     }
                 }
+
+                vaultClassLoader = new URLClassLoader(libList.toArray(new URL[libList.size()]));
+                init = true;
             }
 
-            vaultClassLoader = new URLClassLoader(libList.toArray(new URL[libList.size()]));
-            init = true;
         }
     }
 }
