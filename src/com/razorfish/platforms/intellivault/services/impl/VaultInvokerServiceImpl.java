@@ -43,6 +43,7 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
 
             try {
                 Thread.currentThread().setContextClassLoader(vaultClassLoader);
+                //figure out which vlt class to use based on version
                 String vltCLs = isVault3 ? VAULT3_CLASS : VAULT_CLASS;
                 Class<?> vltClass = Class.forName(vltCLs, true, vaultClassLoader);
                 Method vltMethod = vltClass.getMethod(VAULT_METHOD, String[].class);
