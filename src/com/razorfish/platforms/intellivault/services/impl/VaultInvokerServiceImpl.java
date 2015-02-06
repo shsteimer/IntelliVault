@@ -16,8 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA. User: sean.steimer Date: 3/17/13 Time: 9:07 AM To change this template use File |
- * Settings | File Templates.
+ * The Vault Invoker Service which handles actually calling vault to do import/export operations and dealng with the
+ * classloaders to do so.
  */
 public class VaultInvokerServiceImpl implements VaultInvokerService {
     private static final String VAULT_CLASS = "com.day.jcr.vault.cli.VaultFsApp";
@@ -45,7 +45,7 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
                 Thread.currentThread().setContextClassLoader(vaultClassLoader);
                 String vltCLs = isVault3 ? VAULT3_CLASS : VAULT_CLASS;
                 Class<?> vltClass = Class.forName(vltCLs, true, vaultClassLoader);
-                Method vltMethod = vltClass.getMethod(VAULT_METHOD, new Class[] {new String[0].getClass()});
+                Method vltMethod = vltClass.getMethod(VAULT_METHOD, String[].class);
                 vltMethod.invoke(null, new Object[] {args});
             } finally {
                 Thread.currentThread().setContextClassLoader(cl);
@@ -104,7 +104,7 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
                     try {
                         libList.add(lib.toURI().toURL());
                         String libName = lib.getName();
-                        if (libName.contains("vault-vlt-3.1.6")) {
+                        if (libName.contains("vault-vlt-3")) {
                             isVault3 = true;
                         }
                     } catch (IOException e) {

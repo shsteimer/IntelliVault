@@ -1,6 +1,5 @@
 package com.razorfish.platforms.intellivault.services.impl;
 
-import com.razorfish.platforms.intellivault.config.IntelliVaultPreferences;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
@@ -8,11 +7,7 @@ import com.razorfish.platforms.intellivault.config.IntelliVaultPreferences;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sean.steimer
- * Date: 3/28/13
- * Time: 11:50 PM
- * To change this template use File | Settings | File Templates.
+ * The preferences services handles storing and retrieving the configuration state of the vault plugin.
  */
 @State(
         name = "IntelliVaultPreferencesService",
@@ -26,10 +21,11 @@ public class IntelliVaultPreferencesService implements PersistentStateComponent<
 
     /**
      * get the preferences.
+     *
      * @return the preferences
      */
     public IntelliVaultPreferences getPreferences() {
-        if(preferences==null) {
+        if (preferences == null) {
             preferences = new IntelliVaultPreferences();
         }
 
@@ -37,7 +33,7 @@ public class IntelliVaultPreferencesService implements PersistentStateComponent<
     }
 
     public void setPreferences(IntelliVaultPreferences preferences) {
-        this.preferences=preferences;
+        this.preferences = preferences;
     }
 
     @Nullable

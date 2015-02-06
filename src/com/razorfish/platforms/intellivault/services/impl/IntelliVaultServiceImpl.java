@@ -1,5 +1,23 @@
 package com.razorfish.platforms.intellivault.services.impl;
 
+import com.intellij.execution.ui.ConsoleView;
+import com.intellij.execution.ui.ConsoleViewContentType;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ModalityState;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.ui.Messages;
+import com.razorfish.platforms.intellivault.actions.VaultOperationDirectory;
+import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
+import com.razorfish.platforms.intellivault.config.IntelliVaultOperationConfig;
+import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
+import com.razorfish.platforms.intellivault.filter.VaultImportFilter;
+import com.razorfish.platforms.intellivault.services.IntelliVaultService;
+import com.razorfish.platforms.intellivault.services.VaultInvokerService;
+import com.razorfish.platforms.intellivault.utils.FileUtils;
+import com.razorfish.platforms.intellivault.utils.IntelliVaultConstants;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,33 +30,9 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.razorfish.platforms.intellivault.actions.VaultOperationDirectory;
-import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
-import com.razorfish.platforms.intellivault.config.IntelliVaultOperationConfig;
-import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
-import com.razorfish.platforms.intellivault.filter.VaultImportFilter;
-import com.razorfish.platforms.intellivault.services.IntelliVaultService;
-import com.razorfish.platforms.intellivault.services.VaultInvokerService;
-import com.razorfish.platforms.intellivault.utils.FileUtils;
-import com.razorfish.platforms.intellivault.utils.IntelliVaultConstants;
-import com.intellij.execution.ui.ConsoleView;
-import com.intellij.execution.ui.ConsoleViewContentType;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.ui.Messages;
-import com.razorfish.platforms.intellivault.config.IntelliVaultOperationConfig;
-import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
-import com.razorfish.platforms.intellivault.services.IntelliVaultService;
-import com.razorfish.platforms.intellivault.services.VaultInvokerService;
-import com.razorfish.platforms.intellivault.utils.FileUtils;
-import com.razorfish.platforms.intellivault.utils.IntelliVaultConstants;
-
 /**
- * Created with IntelliJ IDEA. User: sean.steimer Date: 3/15/13 Time: 1:10 PM To
- * change this template use File | Settings | File Templates.
+ * The IntelliVault service handles all of the logic around calling vault such as copying files, settting up vault
+ * configurations, etc.
  */
 public class IntelliVaultServiceImpl implements IntelliVaultService {
 
@@ -266,16 +260,12 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
     }
 
     /**
-     * Create filter.xml file and populate it's content from the list of jcr
-     * paths handled by this operation.
-     * 
-     * @param baseDir
-     *            the base directory for the vault operation (export or import)
-     * @param paths
-     *            the List of jcr paths to be handled by the operation
+     * Create filter.xml file and populate it's content from the list of jcr paths handled by this operation.
+     *
+     * @param baseDir the base directory for the vault operation (export or import)
+     * @param paths   the List of jcr paths to be handled by the operation
      * @return File representing the filter.xml that was created
-     * @throws IntelliVaultException
-     *             if an error occurs preventing creation of the file
+     * @throws IntelliVaultException if an error occurs preventing creation of the file
      */
     private File createFilterFile(final File baseDir, final List<String> paths) throws IntelliVaultException {
         File filterFile = null;
@@ -308,12 +298,10 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
 
     /**
      * Create an empty filter.xml file.
-     * 
-     * @param baseDir
-     *            the base directory for the vault operation (export or import)
+     *
+     * @param baseDir the base directory for the vault operation (export or import)
      * @return File representing the filter.xml that was created
-     * @throws IOException
-     *             if an IOError occurs preventing creation of the file
+     * @throws IOException if an IOError occurs preventing creation of the file
      */
     private File createFilterFile(File baseDir) throws IOException {
         File filterConfigDir =
@@ -330,16 +318,12 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
     }
 
     /**
-     * Redirect the system output for vault to another, custom output stream.
-     * Also starts a thread to read that stream to identify underlying vault
-     * errors.
-     * 
-     * @throws IOException
-     *             if an error occurs
-     * @param console
-     *            the console to log messages to
-     * @return PrintStream that formerly was System.out, so that it can be
-     *         restored later
+     * Redirect the system output for vault to another, custom output stream. Also starts a thread to read that stream
+     * to identify underlying vault errors.
+     *
+     * @param console the console to log messages to
+     * @return PrintStream that formerly was System.out, so that it can be restored later
+     * @throws IOException if an error occurs
      */
     private PrintStream redirectSysOut(final ConsoleView console) throws IOException {
         PrintStream sysOut = System.out;
@@ -383,11 +367,9 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
 
     /**
      * Restore the system output stream
-     * 
-     * @throws IOException
-     *             if an error occurs while restoring
-     * @param sysOut
-     *            the output stream to restore to System.out
+     *
+     * @param sysOut the output stream to restore to System.out
+     * @throws IOException if an error occurs while restoring
      */
     private void restoreSysOut(PrintStream sysOut) throws IOException {
         System.setOut(sysOut);
