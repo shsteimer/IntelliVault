@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.crownpartners.intellivault</id>
     <name>IntelliVault</name>
-    <version>0.9.4</version>
+    <version>0.9.5</version>
     <vendor email="sean.steimer@razorfish.com" url="http://technologyplatforms.razorfish.com/">Razorfish Platforms
     </vendor>
 
@@ -20,6 +20,7 @@
       <li>v0.9.2: Fixing an issue where the temp directory isn't always deleted.</li>
       <li>v0.9.3: Updates to plugin metadata.</li>
       <li>v0.9.4: Merged PR from sdehandt; Added option to bypass message dialogs.  Also re-branded to Razorfish Platforms and added support for VLT 3.</li>
+      <li>v0.9.5: TBD</li>
       </ul>
       ]]>
     </change-notes>
