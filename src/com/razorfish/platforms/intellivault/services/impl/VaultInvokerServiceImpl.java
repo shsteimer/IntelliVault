@@ -21,12 +21,14 @@ import java.util.List;
  */
 public class VaultInvokerServiceImpl implements VaultInvokerService {
     private static final String VAULT_CLASS = "com.day.jcr.vault.cli.VaultFsApp";
+    private static final String VAULT3_CLASS = "org.apache.jackrabbit.vault.cli.VaultFsApp";
     private static final String VAULT_METHOD = "main";
     public static final String LIB = "lib";
     public static final String BIN = "bin";
 
     private ClassLoader vaultClassLoader;
     private boolean init = false;
+    private boolean isVault3 = false;
 
     private static final Logger log = Logger.getInstance(VaultInvokerServiceImpl.class);
 
@@ -41,7 +43,8 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
 
             try {
                 Thread.currentThread().setContextClassLoader(vaultClassLoader);
-                Class<?> vltClass = Class.forName(VAULT_CLASS, true, vaultClassLoader);
+                String vltCLs = isVault3 ? VAULT3_CLASS : VAULT_CLASS;
+                Class<?> vltClass = Class.forName(vltCLs, true, vaultClassLoader);
                 Method vltMethod = vltClass.getMethod(VAULT_METHOD, new Class[] {new String[0].getClass()});
                 vltMethod.invoke(null, new Object[] {args});
             } finally {
@@ -97,11 +100,15 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
                 }
             });
             if (libs != null) {
-                for (int i = 0; i < libs.length; i++) {
+                for (File lib : libs) {
                     try {
-                        libList.add(libs[i].toURI().toURL());
+                        libList.add(lib.toURI().toURL());
+                        String libName = lib.getName();
+                        if (libName.contains("vault-vlt-3.1.6")) {
+                            isVault3 = true;
+                        }
                     } catch (IOException e) {
-                        log.error("error loading lib " + libs[i].getAbsolutePath(), e);
+                        log.error("error loading lib " + lib.getAbsolutePath(), e);
                     }
                 }
 
