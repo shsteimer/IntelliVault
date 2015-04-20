@@ -27,7 +27,7 @@ The archived package for Vault command line tools is located under your CQ/AEM s
 
 Unpack the file `filevault.zip` to any folder on your file system, and then in the **Intellivault** configuration dialog enter the path to the unpacked *Filevault* folder, i.e. `/Users/ccpizz/bin/vault-cli-3.1.6`.
 
-Once you have unpacked the **filevualt** files, open the plugin configuration dialog accessible via **Preferences** > **Other Settings** > **IntelliVault**.
+Once you have unpacked the **filevault** files, open the plugin configuration dialog accessible via **Preferences** > **Other Settings** > **IntelliVault**.
 
 In the dialog specify the repository:
 
