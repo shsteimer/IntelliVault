@@ -50,16 +50,8 @@ public abstract class IntelliVaultAbstractAction extends AnAction {
         final PsiDirectory psiDir = getCRXDirectory(evt);
         final VaultOperationDirectory vaultOpDir = new VaultOperationDirectory(psiDir,conf.getRootFolderName());
 
-        boolean proceed = !conf.showMessageDialogs() ||
-                (
-                Messages.showYesNoDialog(String.format(getDialogMessage(),new Object[]{
-                        repository.getRepoUrl() + vaultOpDir.getJcrPath(),
-                        vaultOpDir.getPsiDir().getVirtualFile().getCanonicalPath()}), "Run IntelliVault?",
-                        Messages.getQuestionIcon()) == Messages.YES);
-        if (proceed) {
-            Project project = evt.getData(PlatformDataKeys.PROJECT);
-            ProgressManager.getInstance().run(getTask(vaultOpDir, conf, repository, project));
-        }
+        Project project = evt.getData(PlatformDataKeys.PROJECT);
+        ProgressManager.getInstance().run(getTask(vaultOpDir, conf, repository, project));
     }
 
     protected abstract Task getTask(VaultOperationDirectory vaultOpDir, IntelliVaultOperationConfig conf,
