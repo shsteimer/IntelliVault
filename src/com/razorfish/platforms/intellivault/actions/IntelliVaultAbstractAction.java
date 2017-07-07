@@ -57,8 +57,6 @@ public abstract class IntelliVaultAbstractAction extends AnAction {
     protected abstract Task getTask(VaultOperationDirectory vaultOpDir, IntelliVaultOperationConfig conf,
                                     IntelliVaultCRXRepository repository, Project project);
 
-    protected abstract String getDialogMessage();
-
     protected PsiDirectory getCRXDirectory(AnActionEvent evt) {
         IdeView ideView = evt.getData(LangDataKeys.IDE_VIEW);
         if(ideView!=null){

@@ -96,17 +96,6 @@ public class IntelliVaultImportAction extends IntelliVaultAbstractAction {
             IntelliVaultService vaultService = getVaultService();
             try {
                 vaultService.vaultImport(repository, conf, vaultOpDir, progressIndicator, console);
-                if (conf.showMessageDialogs()) {
-                    ApplicationManager.getApplication().invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            Messages.showInfoMessage(String.format("Successfully Imported to %s.",
-                                            new Object[]{repository.getRepoUrl() + vaultOpDir.getJcrPath()}),
-                                    "IntelliVault Import Completed Successfully!"
-                            );
-                        }
-                    });
-                }
             }
             catch (final IntelliVaultException e) {
                 ApplicationManager.getApplication().invokeLater(new Runnable() {

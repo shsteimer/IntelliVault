@@ -34,10 +34,6 @@ public class IntelliVaultExportAction extends IntelliVaultAbstractAction {
         return new IntelliVaultExportTask(vaultOpDir,conf,repository, project);
     }
 
-    protected String getDialogMessage() {
-        return "Export from %s to %s?";
-    }
-
     private class IntelliVaultExportTask extends Task.Backgroundable {
 
         private VaultOperationDirectory vaultOpDir;
@@ -84,17 +80,6 @@ public class IntelliVaultExportAction extends IntelliVaultAbstractAction {
             final IntelliVaultService vaultService = getVaultService();
             try {
                 vaultService.vaultExport(repository, conf, vaultOpDir, progressIndicator, console);
-
-                if (conf.showMessageDialogs()) {
-                    ApplicationManager.getApplication().invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            Messages.showInfoMessage(String.format("Successfully Exported from %s.",
-                                    new Object[]{repository.getRepoUrl() + vaultOpDir.getJcrPath()}),
-                                    "IntelliVault Export Completed Successfully!");
-                        }
-                    });
-                }
             } catch (final IntelliVaultException e) {
                 ApplicationManager.getApplication().invokeLater(new Runnable() {
                     @Override
