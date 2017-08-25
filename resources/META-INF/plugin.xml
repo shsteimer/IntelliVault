@@ -46,6 +46,7 @@
             class="com.razorfish.platforms.intellivault.actions.IntelliVaultImportAction"
             text="Push to CRX..."
             description="Import a node or set of nodes into CRX from the local IntelliJ IDEA project.">
+      <keyboard-shortcut first-keystroke="control alt U" keymap="$default"/>
     </action>
     <action id="IntelliVault.Plugin.Export"
             class="com.razorfish.platforms.intellivault.actions.IntelliVaultExportAction"
