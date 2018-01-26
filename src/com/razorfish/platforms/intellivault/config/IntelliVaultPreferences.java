@@ -2,10 +2,7 @@ package com.razorfish.platforms.intellivault.config;
 
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,13 +27,13 @@ public class IntelliVaultPreferences implements Serializable {
     public List<String> fileIgnorePatterns;
     //CHECKSTYLE:ON
 
-    public Map<String,String> repoConfigs;
+    public Map<String, IntelliVaultCRXRepository> repoConfigs;
 
     /**
      * Create a default preferences object.
      */
     public IntelliVaultPreferences() {
-        IntelliVaultOperationConfig operationConfig=new IntelliVaultOperationConfig();
+        IntelliVaultOperationConfig operationConfig = new IntelliVaultOperationConfig();
         this.vaultPath = operationConfig.getVaultPath();
         this.tempDirectory = operationConfig.getTempDirectory();
         this.rootFolderName = operationConfig.getRootFolderName();
@@ -49,11 +46,12 @@ public class IntelliVaultPreferences implements Serializable {
         this.fileIgnorePatterns = operationConfig.getFileIgnorePatterns();
 
         IntelliVaultCRXRepository repo = new IntelliVaultCRXRepository();
-        this.addRepositoryConfiguration(repo.getRepoUrl(), repo.getUsername(), repo.getPassword());
+        this.addRepositoryConfiguration("default",repo);
     }
 
     /**
      * Get the applicable IntelliVaultOperationConfig from this IntelliVaultPreferences object.
+     *
      * @return the operation config
      */
     public IntelliVaultOperationConfig getOperationConfig() {
@@ -73,28 +71,40 @@ public class IntelliVaultPreferences implements Serializable {
         return operationConfig;
     }
 
-    public List<IntelliVaultCRXRepository> getRepositoryList() {
-        List<IntelliVaultCRXRepository> repositoryList = new ArrayList<IntelliVaultCRXRepository>();
-        for (String userUrl : this.repoConfigs.keySet()) {
-            String password = this.repoConfigs.get(userUrl);
-            String user = userUrl.substring(0, userUrl.indexOf(REPO_USER_DELIMITER));
-            String url = userUrl.substring(userUrl.indexOf(REPO_USER_DELIMITER) + 1);
-
-            IntelliVaultCRXRepository repository = new IntelliVaultCRXRepository();
-            repository.setPassword(password);
-            repository.setUsername(user);
-            repository.setRepoUrl(url);
-            repositoryList.add(repository);
-        }
-
-        return repositoryList;
+    public void addRepositoryConfiguration(final String repoName, final String url, final String username, final String password) {
+        IntelliVaultCRXRepository repo = new IntelliVaultCRXRepository(url,username,password);
+        addRepositoryConfiguration(repoName, repo);
     }
 
-    public void addRepositoryConfiguration(final String url, final String username, final String password) {
-        if(this.repoConfigs==null) {
-            this.repoConfigs=new HashMap<String, String>();
+    public void addRepositoryConfiguration(final String repoName, IntelliVaultCRXRepository repo) {
+        if (this.repoConfigs == null) {
+            this.repoConfigs = new HashMap<>();
         }
 
-        this.repoConfigs.put(username + REPO_USER_DELIMITER + url, password);
+        this.repoConfigs.put(repoName, repo);
+    }
+
+    public void removeRepositoryConfiguration(final String repoName){
+        this.repoConfigs.remove(repoName);
+    }
+
+    public void getRepositoryConfiguration(final String repoName){
+        this.repoConfigs.get(repoName);
+    }
+
+    public Map<String, IntelliVaultCRXRepository> getRepoConfigs(){
+        return repoConfigs;
+    }
+
+    public IntelliVaultCRXRepository getFirstRepositoryConfiguration(){
+        Collection<IntelliVaultCRXRepository> collRepo = repoConfigs.values();
+        List<IntelliVaultCRXRepository> listRepos;
+        if (collRepo instanceof List){
+            listRepos = (List<IntelliVaultCRXRepository>)collRepo;
+        } else {
+            listRepos = new ArrayList<>(collRepo);
+        }
+
+        return listRepos.get(0);
     }
 }

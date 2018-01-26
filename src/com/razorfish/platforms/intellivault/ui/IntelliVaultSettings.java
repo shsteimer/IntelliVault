@@ -1,5 +1,7 @@
 package com.razorfish.platforms.intellivault.ui;
 
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.ui.Messages;
 import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
 import com.razorfish.platforms.intellivault.config.IntelliVaultPreferences;
 import com.razorfish.platforms.intellivault.services.VaultInvokerService;
@@ -7,21 +9,10 @@ import com.razorfish.platforms.intellivault.services.impl.IntelliVaultPreference
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
-import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
-import com.razorfish.platforms.intellivault.config.IntelliVaultPreferences;
-import com.razorfish.platforms.intellivault.services.VaultInvokerService;
-import com.razorfish.platforms.intellivault.services.impl.IntelliVaultPreferencesService;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,11 +23,14 @@ import java.util.List;
  * Time: 12:41 PM
  * To change this template use File | Settings | File Templates.
  */
-public class IntelliiVaultSettings implements Configurable {
+public class IntelliVaultSettings implements Configurable {
+
+    private static final Logger log = Logger.getInstance(IntelliVaultSettings.class);
 
     public static final String FILE_IGNORE_PATTERN_SEPERATOR = ",";
     public static final String CURRENT_DIRECTORY_SYMBOL = ".";
     private JPanel jPanel;
+    private JComboBox comboProfileSelect;
     private JTextField txtVaultDir;
     private JButton btnVaultDirBrowse;
     private JButton btnTempDirBrowse;
@@ -49,6 +43,7 @@ public class IntelliiVaultSettings implements Configurable {
     private JTextField txtJCRRootDirName;
     private JButton btnRestoreDefaults;
     private JCheckBox showDialogsCheckBox;
+    private JButton btnDeleteProfile;
 
     @Nls
     @Override
@@ -65,50 +60,42 @@ public class IntelliiVaultSettings implements Configurable {
     @Nullable
     @Override
     public JComponent createComponent() {
-        btnTempDirBrowse.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                JFileChooser chooser = new JFileChooser();
-                String currentDirectory = txtTempDir.getText()!=null && txtTempDir.getText().length()>0 ?
-                        txtTempDir.getText() : CURRENT_DIRECTORY_SYMBOL;
-                chooser.setCurrentDirectory(new java.io.File(currentDirectory));
-                chooser.setDialogTitle("Select Temp Directory");
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                chooser.setAcceptAllFileFilterUsed(false);
+        btnTempDirBrowse.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            String currentDirectory = txtTempDir.getText()!=null && txtTempDir.getText().length()>0 ?
+                    txtTempDir.getText() : CURRENT_DIRECTORY_SYMBOL;
+            chooser.setCurrentDirectory(new java.io.File(currentDirectory));
+            chooser.setDialogTitle("Select Temp Directory");
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            chooser.setAcceptAllFileFilterUsed(false);
 
-                // Demonstrate "Open" dialog:
-                int rVal = chooser.showOpenDialog(jPanel);
-                if (rVal == JFileChooser.APPROVE_OPTION) {
-                    txtTempDir.setText(chooser.getSelectedFile().getAbsolutePath());
-                }
+            // Demonstrate "Open" dialog:
+            int rVal = chooser.showOpenDialog(jPanel);
+            if (rVal == JFileChooser.APPROVE_OPTION) {
+                txtTempDir.setText(chooser.getSelectedFile().getAbsolutePath());
             }
         });
 
-        btnVaultDirBrowse.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser chooser = new JFileChooser();
-                String curDir=txtVaultDir.getText()!=null && txtVaultDir.getText().length()>0
-                        ? txtVaultDir.getText() : CURRENT_DIRECTORY_SYMBOL;
-                chooser.setCurrentDirectory(new java.io.File(curDir));
-                chooser.setDialogTitle("Select Vault Directory");
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                chooser.setAcceptAllFileFilterUsed(false);
+        btnVaultDirBrowse.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            String curDir=txtVaultDir.getText()!=null && txtVaultDir.getText().length()>0
+                    ? txtVaultDir.getText() : CURRENT_DIRECTORY_SYMBOL;
+            chooser.setCurrentDirectory(new java.io.File(curDir));
+            chooser.setDialogTitle("Select Vault Directory");
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            chooser.setAcceptAllFileFilterUsed(false);
 
-                // Demonstrate "Open" dialog:
-                int rVal = chooser.showOpenDialog(jPanel);
-                if (rVal == JFileChooser.APPROVE_OPTION) {
-                    txtVaultDir.setText(chooser.getSelectedFile().getAbsolutePath());
-                }
+            // Demonstrate "Open" dialog:
+            int rVal = chooser.showOpenDialog(jPanel);
+            if (rVal == JFileChooser.APPROVE_OPTION) {
+                txtVaultDir.setText(chooser.getSelectedFile().getAbsolutePath());
             }
         });
 
-        btnRestoreDefaults.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setDialogStateFromPreferences(new IntelliVaultPreferences());
-            }
-        });
+        btnRestoreDefaults.addActionListener(e -> setDialogStateFromPreferences(new IntelliVaultPreferences()));
+
+
+        btnDeleteProfile.addActionListener(e -> deleteCurrentlySelectedProfile());
 
 
         reset();
@@ -160,9 +147,22 @@ public class IntelliiVaultSettings implements Configurable {
         }
 
         preferencesBean.repoConfigs.clear();
-        preferencesBean.addRepositoryConfiguration(txtRepoUrl.getText(), txtUsername.getText(), txtPassword.getText());
+        String profileName = comboProfileSelect.getSelectedItem().toString();
+        preferencesBean.addRepositoryConfiguration(profileName,txtRepoUrl.getText(), txtUsername.getText(), txtPassword.getText());
 
         return preferencesBean;
+    }
+
+    private void deleteCurrentlySelectedProfile(){
+        Object selectedItem = comboProfileSelect.getSelectedItem();
+        if(selectedItem != null){
+            int deleteChoice = Messages.showYesNoDialog("Are you sure you want to delete the profile " + selectedItem.toString() + "?","Delete profile",null);
+            if(deleteChoice == Messages.YES){
+                comboProfileSelect.removeItem(selectedItem);
+            }
+        } else{
+            log.warn("No option selected");
+        }
     }
 
     /**
@@ -186,13 +186,11 @@ public class IntelliiVaultSettings implements Configurable {
         ignorePatterns = ignorePatterns.substring(0, ignorePatterns.length()-1);
         txtIgnorePatterns.setText(ignorePatterns);
 
-        List<IntelliVaultCRXRepository> repositoryList = preferences.getRepositoryList();
-        if (repositoryList != null && repositoryList.size() > 0){
-            IntelliVaultCRXRepository intelliVaultCRXRepository = repositoryList.get(0);
-            txtRepoUrl.setText(intelliVaultCRXRepository.getRepoUrl());
-            txtPassword.setText(intelliVaultCRXRepository.getPassword());
-            txtUsername.setText(intelliVaultCRXRepository.getUsername());
-        }
+        IntelliVaultCRXRepository intelliVaultCRXRepository = preferences.getFirstRepositoryConfiguration();
+        txtRepoUrl.setText(intelliVaultCRXRepository.getRepoUrl());
+        txtPassword.setText(intelliVaultCRXRepository.getPassword());
+        txtUsername.setText(intelliVaultCRXRepository.getUsername());
+
     }
 
     @Override
@@ -200,4 +198,7 @@ public class IntelliiVaultSettings implements Configurable {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+    }
 }

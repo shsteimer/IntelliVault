@@ -1,7 +1,7 @@
-<idea-plugin version="2">
+<idea-plugin>
     <id>com.crownpartners.intellivault</id>
     <name>IntelliVault</name>
-    <version>0.9.5</version>
+    <version>0.10.0</version>
     <vendor email="sean.steimer@razorfish.com" url="http://technologyplatforms.razorfish.com/">Razorfish Platforms
     </vendor>
 
@@ -21,6 +21,7 @@
       <li>v0.9.3: Updates to plugin metadata.</li>
       <li>v0.9.4: Merged PR from sdehandt; Added option to bypass message dialogs.  Also re-branded to Razorfish Platforms and added support for VLT 3.</li>
       <li>v0.9.5: Fixed compile version to use JDK 1.6</li>
+      <li>v0.10.0: Added multiple profiles and </li>
       </ul>
       ]]>
     </change-notes>
@@ -73,6 +74,6 @@
         <applicationService
                 serviceImplementation="com.razorfish.platforms.intellivault.services.impl.IntelliVaultPreferencesService"/>
         <applicationConfigurable
-                implementation="com.razorfish.platforms.intellivault.ui.IntelliiVaultSettings"></applicationConfigurable>
+                implementation="com.razorfish.platforms.intellivault.ui.IntelliVaultSettings"></applicationConfigurable>
     </extensions>
 </idea-plugin>

@@ -31,7 +31,7 @@ public class IntelliVaultExportAction extends IntelliVaultAbstractAction {
     @Override
     protected Task getTask(VaultOperationDirectory vaultOpDir, IntelliVaultOperationConfig conf,
                            IntelliVaultCRXRepository repository, Project project) {
-        return new IntelliVaultExportTask(vaultOpDir,conf,repository, project);
+        return new IntelliVaultExportTask(vaultOpDir, conf, repository, project);
     }
 
     protected String getDialogMessage() {
@@ -47,20 +47,25 @@ public class IntelliVaultExportAction extends IntelliVaultAbstractAction {
 
         public IntelliVaultExportTask(final VaultOperationDirectory vaultOpDir, final IntelliVaultOperationConfig conf,
                                       final IntelliVaultCRXRepository repository, final Project project) {
-            super(project,"Running IntelliVault Export Action");
-            this.conf=conf;
-            this.repository=repository;
-            this.vaultOpDir=vaultOpDir;
 
+            super(project, "Running IntelliVault Export Action");
 
+            this.conf = conf;
+            this.repository = repository;
+            this.vaultOpDir = vaultOpDir;
 
             TextConsoleBuilderFactory factory = TextConsoleBuilderFactory.getInstance();
             this.console = factory.createBuilder(project).getConsole();
 
+            createToolWindow(project);
+
+        }
+
+        private void createToolWindow(final Project project){
             ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
             String twId = "IntelliVault";
             ToolWindow toolWindow = toolWindowManager.getToolWindow(twId);
-            if(toolWindow==null) {
+            if (toolWindow == null) {
                 toolWindow = toolWindowManager.registerToolWindow(twId, true, ToolWindowAnchor.BOTTOM);
             }
 
@@ -71,11 +76,8 @@ public class IntelliVaultExportAction extends IntelliVaultAbstractAction {
             toolWindow.getContentManager().setSelectedContent(content);
             //TODO toolWindow.setIcon();
 
-            toolWindow.show(new Runnable() {
-                @Override
-                public void run() {
-                    //To change body of implemented methods use File | Settings | File Templates.
-                }
+            toolWindow.show(() -> {
+                //To change body of implemented methods use File | Settings | File Templates.
             });
         }
 
@@ -86,22 +88,14 @@ public class IntelliVaultExportAction extends IntelliVaultAbstractAction {
                 vaultService.vaultExport(repository, conf, vaultOpDir, progressIndicator, console);
 
                 if (conf.showMessageDialogs()) {
-                    ApplicationManager.getApplication().invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            Messages.showInfoMessage(String.format("Successfully Exported from %s.",
-                                    new Object[]{repository.getRepoUrl() + vaultOpDir.getJcrPath()}),
-                                    "IntelliVault Export Completed Successfully!");
-                        }
-                    });
+                    ApplicationManager.getApplication().invokeLater(
+                            () -> Messages.showInfoMessage(String.format("Successfully Exported from %s.",
+                            repository.getRepoUrl() + vaultOpDir.getJcrPath()),
+                            "IntelliVault Export Completed Successfully!")
+                    );
                 }
             } catch (final IntelliVaultException e) {
-                ApplicationManager.getApplication().invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        Messages.showErrorDialog(e.getLocalizedMessage(), "IntelliVault Error!");
-                    }
-                });
+                ApplicationManager.getApplication().invokeLater(() -> Messages.showErrorDialog(e.getLocalizedMessage(), "IntelliVault Error!"));
 
             }
         }

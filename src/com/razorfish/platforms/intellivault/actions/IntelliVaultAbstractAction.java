@@ -16,10 +16,6 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiDirectory;
-import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
-import com.razorfish.platforms.intellivault.config.IntelliVaultOperationConfig;
-import com.razorfish.platforms.intellivault.services.IntelliVaultService;
-import com.razorfish.platforms.intellivault.services.impl.IntelliVaultPreferencesService;
 
 /**
  * Created with IntelliJ IDEA.
@@ -101,6 +97,6 @@ public abstract class IntelliVaultAbstractAction extends AnAction {
     protected IntelliVaultCRXRepository getSelectedIntelliVaultCRXRepository() {
         IntelliVaultPreferencesService preferences = ServiceManager.getService(IntelliVaultPreferencesService.class);
 
-        return preferences.getPreferences().getRepositoryList().get(0);
+        return preferences.getPreferences().getFirstRepositoryConfiguration();
     }
 }
