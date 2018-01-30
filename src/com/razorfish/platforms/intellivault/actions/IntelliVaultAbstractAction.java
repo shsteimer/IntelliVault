@@ -1,5 +1,8 @@
 package com.razorfish.platforms.intellivault.actions;
 
+import com.intellij.openapi.options.newEditor.SettingsDialog;
+import com.intellij.openapi.ui.DialogBuilder;
+import com.intellij.openapi.ui.DialogWrapper;
 import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
 import com.razorfish.platforms.intellivault.config.IntelliVaultOperationConfig;
 import com.razorfish.platforms.intellivault.services.IntelliVaultService;
@@ -16,6 +19,7 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiDirectory;
+import com.razorfish.platforms.intellivault.ui.IntelliVaultRepositorySelector;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,29 +36,45 @@ public abstract class IntelliVaultAbstractAction extends AnAction {
     public void update(final AnActionEvent evt) {
         PsiDirectory directory = getCRXDirectory(evt);
         //if directory is null (no jcr directory selected) or the directory is the jcr root, don't let them proceed.
-        if(directory==null || directory.getName().equals(getIntelliVaultConfig().getRootFolderName())) {
+        if (directory == null || directory.getName().equals(getIntelliVaultConfig().getRootFolderName())) {
             evt.getPresentation().setEnabled(false);
-            return;
         }
 
     }
 
     public void actionPerformed(final AnActionEvent evt) {
-        final IntelliVaultCRXRepository repository = getSelectedIntelliVaultCRXRepository();
+
         final IntelliVaultOperationConfig conf = getIntelliVaultConfig();
 
         final PsiDirectory psiDir = getCRXDirectory(evt);
-        final VaultOperationDirectory vaultOpDir = new VaultOperationDirectory(psiDir,conf.getRootFolderName());
-
-        boolean proceed = !conf.showMessageDialogs() ||
-                (
-                Messages.showYesNoDialog(String.format(getDialogMessage(),new Object[]{
-                        repository.getRepoUrl() + vaultOpDir.getJcrPath(),
-                        vaultOpDir.getPsiDir().getVirtualFile().getCanonicalPath()}), "Run IntelliVault?",
-                        Messages.getQuestionIcon()) == Messages.YES);
-        if (proceed) {
-            Project project = evt.getData(PlatformDataKeys.PROJECT);
-            ProgressManager.getInstance().run(getTask(vaultOpDir, conf, repository, project));
+        final VaultOperationDirectory vaultOpDir = new VaultOperationDirectory(psiDir, conf.getRootFolderName());
+        Project project = evt.getData(PlatformDataKeys.PROJECT);
+        //TODO ask which repo config to use
+        if(crxRepository == null){
+            final IntelliVaultRepositorySelector form = new IntelliVaultRepositorySelector(project,this);
+            form.show();
+            if (form.getExitCode() == DialogWrapper.OK_EXIT_CODE) {
+                IntelliVaultCRXRepository repository = getSelectedIntelliVaultCRXRepository();
+                boolean proceed = !conf.showMessageDialogs() ||
+                        (
+                            Messages.showYesNoDialog(
+                                String.format(
+                                    getDialogMessage(),
+                                    repository.getRepoUrl() + vaultOpDir.getJcrPath(),
+                                    vaultOpDir.getPsiDir().getVirtualFile().getCanonicalPath()
+                                ),
+                                "Run IntelliVault?",
+                                Messages.getQuestionIcon()
+                            ) == Messages.YES
+                        );
+                if (proceed) {
+                    ProgressManager.getInstance().run(getTask(vaultOpDir, conf, repository, project));
+                }else{
+                    log.debug("User canceled action after selecting a repository");
+                }
+            } else {
+                log.debug("User canceled action");
+            }
         }
     }
 
@@ -65,18 +85,18 @@ public abstract class IntelliVaultAbstractAction extends AnAction {
 
     protected PsiDirectory getCRXDirectory(AnActionEvent evt) {
         IdeView ideView = evt.getData(LangDataKeys.IDE_VIEW);
-        if(ideView!=null){
+        if (ideView != null) {
             PsiDirectory[] directories = ideView.getDirectories();
-            if(directories!=null && directories.length==1) {
+            if (directories != null && directories.length == 1) {
                 PsiDirectory directory = directories[0];
                 String rootFolderName = getIntelliVaultConfig().getRootFolderName();
 
-                PsiDirectory curDir=directory;
-                while(curDir!=null) {
-                    if(curDir.getName().equals(rootFolderName))     {
+                PsiDirectory curDir = directory;
+                while (curDir != null) {
+                    if (curDir.getName().equals(rootFolderName)) {
                         return directory;
                     }
-                    curDir=curDir.getParentDirectory();
+                    curDir = curDir.getParentDirectory();
                 }
 
             }
@@ -94,9 +114,13 @@ public abstract class IntelliVaultAbstractAction extends AnAction {
         return preferences.getPreferences().getOperationConfig();
     }
 
-    protected IntelliVaultCRXRepository getSelectedIntelliVaultCRXRepository() {
-        IntelliVaultPreferencesService preferences = ServiceManager.getService(IntelliVaultPreferencesService.class);
+    private IntelliVaultCRXRepository crxRepository;
 
-        return preferences.getPreferences().getFirstRepositoryConfiguration();
+    public IntelliVaultCRXRepository getSelectedIntelliVaultCRXRepository() {
+        return crxRepository;
+    }
+
+    public void setSelectedIntelliVaultCRXRepository(IntelliVaultCRXRepository crxRepository) {
+        this.crxRepository = crxRepository;
     }
 }

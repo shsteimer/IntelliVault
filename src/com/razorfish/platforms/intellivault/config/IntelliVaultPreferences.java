@@ -72,7 +72,7 @@ public class IntelliVaultPreferences implements Serializable {
     }
 
     public void addRepositoryConfiguration(final String repoName, final String url, final String username, final String password) {
-        IntelliVaultCRXRepository repo = new IntelliVaultCRXRepository(url,username,password);
+        IntelliVaultCRXRepository repo = new IntelliVaultCRXRepository(repoName,url,username,password);
         addRepositoryConfiguration(repoName, repo);
     }
 

@@ -12,6 +12,7 @@ import java.io.Serializable;
 public class IntelliVaultCRXRepository implements Serializable{
 
     private static final long serialVersionUID = 8008135L;
+    private String name;
     private String repoUrl;
     private String username;
     private String password;
@@ -20,12 +21,14 @@ public class IntelliVaultCRXRepository implements Serializable{
      * Create a new instance, pre-populating the default values for url, username, and password.
      */
     public IntelliVaultCRXRepository() {
+        this.name= "new repository";
         this.repoUrl = IntelliVaultConfigDefaults.REPO_URL;
         this.password = IntelliVaultConfigDefaults.REPO_PASSWORD;
         this.username = IntelliVaultConfigDefaults.REPO_USER;
     }
 
-    public IntelliVaultCRXRepository(String repoUrl, String username, String password){
+    public IntelliVaultCRXRepository(String name, String repoUrl, String username, String password){
+        this.name = name;
         this.repoUrl = repoUrl;
         this.username = username;
         this.password = password;
@@ -55,5 +58,12 @@ public class IntelliVaultCRXRepository implements Serializable{
         this.username = username;
     }
 
+    public String getName(){ return name; }
+    public void setName(String name){ this.name = name; }
 
+
+    @Override
+    public String toString(){
+        return name;
+    }
 }
