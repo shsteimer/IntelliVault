@@ -2,6 +2,7 @@ package com.razorfish.platforms.intellivault.config;
 
 
 import com.intellij.openapi.vcs.history.VcsRevisionNumber;
+import com.razorfish.platforms.intellivault.services.impl.IntelliVaultPreferencesService;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -70,20 +71,41 @@ public class IntelliVaultPreferences implements Serializable, Cloneable {
         return operationConfig;
     }
 
+    /**
+     * Convenience method for putting a {@link IntelliVaultCRXRepository} on the list.
+     *
+     * @see IntelliVaultPreferences#putRepositoryConfiguration(String, String, String, String)
+     *
+     * @param repoName The name of the repository to put.
+     * @param url The url of the repository to put.
+     * @param username The username of the repository to put.
+     * @param password The password of the repository to put.
+     *
+     * @return The newly put or updated {@link IntelliVaultCRXRepository}
+     * */
     public IntelliVaultCRXRepository putRepositoryConfiguration(final String repoName, final String url, final String username, final String password) {
         IntelliVaultCRXRepository repo = new IntelliVaultCRXRepository(repoName, url, username, password);
-        putRepositoryConfiguration(repo);
-        return repo;
+        return putRepositoryConfiguration(repo);
     }
 
-    public void putRepositoryConfiguration(IntelliVaultCRXRepository repo) {
+    /**
+     * Puts a {@link IntelliVaultCRXRepository} on the list.
+     * This method is called 'put' because like a map, it will replace an existing value (treating {@link IntelliVaultCRXRepository#getName()} like a key)
+     *
+     * @param repo The {@link IntelliVaultCRXRepository} to put on the repository list.
+     *
+     * @return The {@link IntelliVaultCRXRepository} that was just put on the list.
+     * */
+    public IntelliVaultCRXRepository putRepositoryConfiguration(IntelliVaultCRXRepository repo) {
         IntelliVaultCRXRepository existing = getRepositoryConfiguration(repo.getName());
         if (existing != null) {
             // Keep list order
             existing.replaceWith(repo);
+            return existing;
         } else {
             repoConfigs.add(repo);
         }
+        return repo;
     }
 
     public void removeRepositoryConfiguration(final String repoName) {
@@ -104,14 +126,27 @@ public class IntelliVaultPreferences implements Serializable, Cloneable {
         return repoConfigs;
     }
 
+    /**
+     * Convenience method to return the first {@link IntelliVaultCRXRepository} or null if none are setup yet.
+     *
+     * @return The first {@link IntelliVaultCRXRepository} in the settings list (after alphabetical sorting)
+     * */
     public IntelliVaultCRXRepository getFirstRepositoryConfiguration() {
         return repoConfigs.size() > 0 ? repoConfigs.get(0) : null;
     }
 
+    /**
+     * Convenience method for determining if there are any {@link IntelliVaultCRXRepository} configurations setup yet.
+     * */
     public boolean hasRepositoryConfigs() {
         return !getRepoConfigs().isEmpty();
     }
 
+    /**
+     * After deserialization this will sort the repository list by name.
+     *
+     * @param in The deserialized preferences.
+     * */
     private void readObject(java.io.ObjectInputStream in)
             throws IOException, ClassNotFoundException {
 
@@ -120,6 +155,15 @@ public class IntelliVaultPreferences implements Serializable, Cloneable {
         in.defaultReadObject();
     }
 
+    /**
+     * Clones this preferences object. Need to do this when loading the settings so that changes can be cancelled,
+     * otherwise updating this object will auto-save (since it likely references the deserialized object)
+     *
+     * @see IntelliVaultPreferencesService#getPreferences()
+     *
+     * @return A deep clone of this preferences object.
+     * */
+    @Override
     public Object clone() {
         IntelliVaultPreferences prefs = new IntelliVaultPreferences();
         prefs.vaultPath = vaultPath;

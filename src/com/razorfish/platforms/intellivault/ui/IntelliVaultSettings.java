@@ -15,9 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -125,6 +123,9 @@ public class IntelliVaultSettings implements Configurable {
         setDialogStateFromPreferences(userPreferences);
     }
 
+    /**
+     * Saves the {@link IntelliVaultPreferences} back to the {@link IntelliVaultPreferencesService}
+     * */
     private void save() {
         IntelliVaultPreferencesService preferencesService = ServiceManager.getService(IntelliVaultPreferencesService.class);
         injectPreferencesFromDialogState(userPreferences);
@@ -135,8 +136,10 @@ public class IntelliVaultSettings implements Configurable {
     }
 
     /**
-     * Serialize the current dialog state to a preferences object which can be used by IntelliVault.
-     * Injects non repository preferences
+     * Serialize the current dialog state to a {@link IntelliVaultPreferences} object which can be used by IntelliVault.
+     * Injects non-repository preferences only, repository settings are handled outside of this.
+     *
+     * @param preferencesBean The bean to inject the dialog state into.
      */
     private void injectPreferencesFromDialogState(IntelliVaultPreferences preferencesBean) {
         preferencesBean.vaultPath = txtVaultDir.getText();
@@ -154,10 +157,13 @@ public class IntelliVaultSettings implements Configurable {
 
     }
 
+    /**
+     * Removes the currently selected {@link IntelliVaultCRXRepository} from the current {@link IntelliVaultPreferences} state.
+     * */
     private void deleteCurrentlySelectedRepository() {
         Object selectedItem = comboProfileSelect.getSelectedItem();
         if (selectedItem != null) {
-            int deleteChoice = Messages.showYesNoDialog("Are you sure you want to delete the profile " + selectedItem.toString() + "?", "Delete Profile", null);
+            int deleteChoice = Messages.showYesNoDialog("Are you sure you want to delete the repository configuration '" + selectedItem.toString() + "'?", "Delete Configuration", null);
             if (deleteChoice == Messages.YES) {
                 comboProfileSelect.removeItem(selectedItem);
                 userPreferences.removeRepositoryConfiguration(((IntelliVaultCRXRepository) selectedItem).getName());
@@ -167,9 +173,13 @@ public class IntelliVaultSettings implements Configurable {
         }
     }
 
+    /**
+     * Puts the current {@link IntelliVaultCRXRepository} state in the {@link IntelliVaultPreferences} repository list.
+     * */
     private void saveCurrentRepository() {
         String repoName = txtRepoName.getText();
 
+        // Setup the new repository.
         IntelliVaultCRXRepository newRepo = new IntelliVaultCRXRepository(
             repoName,
             txtRepoUrl.getText(),
@@ -177,14 +187,14 @@ public class IntelliVaultSettings implements Configurable {
             txtPassword.getText()
         );
 
-        // Check if this
+        // Check if this put request is replacing an old repository configuration.
         IntelliVaultCRXRepository oldRepo = null;
         if(!repoName.equals(lastLoadedRepo) && lastLoadedRepo != null){
             oldRepo = userPreferences.getRepositoryConfiguration(lastLoadedRepo);
         }
 
         if (oldRepo != null) {
-            // Repo name changed.
+            // Repo name has changed, replace in the same slot.
             oldRepo.replaceWith(newRepo);
             lastLoadedRepo = repoName;
         } else {
@@ -203,16 +213,20 @@ public class IntelliVaultSettings implements Configurable {
 
     private String lastLoadedRepo = null;
 
+    /**
+     * Sets the dialog state to reflect the newly selected {@link IntelliVaultCRXRepository}
+     * If the user chooses the "Create New Repository..." option a new repository will be added to the {@link IntelliVaultPreferences} state.
+     * */
     private void loadSelectedRepository() {
         Object selectedItem = comboProfileSelect.getSelectedItem();
         if (selectedItem != null) {
             if (selectedItem instanceof IntelliVaultCRXRepository) {
-                setRepositoryStateFromRepository((IntelliVaultCRXRepository) selectedItem);
+                setDialogStateFromRepository((IntelliVaultCRXRepository) selectedItem);
                 lastLoadedRepo = ((IntelliVaultCRXRepository) selectedItem).getName();
             } else {
                 // New repo was selected
                 IntelliVaultCRXRepository repo = new IntelliVaultCRXRepository();
-                setRepositoryStateFromRepository(repo);
+                setDialogStateFromRepository(repo);
                 lastLoadedRepo = null;
             }
         } else {
@@ -245,7 +259,11 @@ public class IntelliVaultSettings implements Configurable {
         rebuildRepositoryComboBox(null);
     }
 
-    private void setRepositoryStateFromRepository(IntelliVaultCRXRepository repository) {
+    /**
+     * Sets the dialog state to represent a {@link IntelliVaultCRXRepository}.
+     * @param repository The {@link IntelliVaultCRXRepository} to update the ui values with.
+     * */
+    private void setDialogStateFromRepository(IntelliVaultCRXRepository repository) {
         if (repository != null) {
             txtRepoName.setText(repository.getName());
             txtRepoUrl.setText(repository.getRepoUrl());
@@ -259,6 +277,11 @@ public class IntelliVaultSettings implements Configurable {
         }
     }
 
+    /**
+     * Rebuilds the combo box that represents the current {@link IntelliVaultPreferences} state's {@link IntelliVaultCRXRepository} list.
+     *
+     * @param selectedItem An optional item to set as the selected item after rebuild.
+     * */
     private void rebuildRepositoryComboBox(IntelliVaultCRXRepository selectedItem){
         comboProfileSelect.removeAllItems();
         comboProfileSelect.addItem("Create New Repository...");
@@ -272,7 +295,7 @@ public class IntelliVaultSettings implements Configurable {
         if(selectedItem != null){
             comboProfileSelect.setSelectedItem(selectedItem);
         }
-        setRepositoryStateFromRepository(selectedItem);
+        setDialogStateFromRepository(selectedItem);
     }
 
     @Override

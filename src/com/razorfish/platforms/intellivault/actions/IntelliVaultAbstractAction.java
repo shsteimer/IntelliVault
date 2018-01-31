@@ -47,17 +47,19 @@ public abstract class IntelliVaultAbstractAction extends AnAction {
 
         final IntelliVaultPreferences preferences = ServiceManager.getService(IntelliVaultPreferencesService.class).getPreferences();
 
-        if(preferences.hasRepositoryConfigs()){
+        // A user must config their repositories before using the tool.
+        if (preferences.hasRepositoryConfigs()) {
             final PsiDirectory psiDir = getCRXDirectory(evt);
             final VaultOperationDirectory vaultOpDir = new VaultOperationDirectory(psiDir, conf.getRootFolderName());
             Project project = evt.getData(PlatformDataKeys.PROJECT);
 
-            final IntelliVaultRepositorySelector form = new IntelliVaultRepositorySelector(project,this);
+            // Shows the dialog that lets the user select one of their configured CRX Repositories.
+            final IntelliVaultRepositorySelector form = new IntelliVaultRepositorySelector(project, this);
             form.show();
             log.info("form exit code is " + form.getExitCode() + " we need " + DialogWrapper.OK_EXIT_CODE);
             if (form.getExitCode() == DialogWrapper.OK_EXIT_CODE) {
                 IntelliVaultCRXRepository repository = getSelectedIntelliVaultCRXRepository();
-                if(repository != null){
+                if (repository != null) {
                     boolean proceed = !conf.showMessageDialogs() ||
                             (
                                     Messages.showYesNoDialog(
@@ -72,22 +74,21 @@ public abstract class IntelliVaultAbstractAction extends AnAction {
                             );
                     if (proceed) {
                         ProgressManager.getInstance().run(getTask(vaultOpDir, conf, repository, project));
-                    }else{
+                    } else {
                         log.debug("User canceled action after selecting a repository");
                     }
-                } else{
+                } else {
                     log.warn("Cannot continue, selected repository is null");
                 }
             } else {
                 log.debug("User canceled action");
             }
         } else {
-            Messages.showErrorDialog("You haven't set up any repositories yet. Go to File > Settings > IntelliVault to setup your repositories.","Cannot Perform Action");
+            Messages.showErrorDialog("You haven't set up any repositories yet. Go to File > Settings > IntelliVault to setup your repositories.", "Cannot Perform Action");
         }
     }
 
-    protected abstract Task getTask(VaultOperationDirectory vaultOpDir, IntelliVaultOperationConfig conf,
-                                    IntelliVaultCRXRepository repository, Project project);
+    protected abstract Task getTask(VaultOperationDirectory vaultOpDir, IntelliVaultOperationConfig conf, IntelliVaultCRXRepository repository, Project project);
 
     protected abstract String getDialogMessage();
 
@@ -122,12 +123,24 @@ public abstract class IntelliVaultAbstractAction extends AnAction {
         return preferences.getPreferences().getOperationConfig();
     }
 
+    /** The selected CRX repository from the select dialog. */
     private IntelliVaultCRXRepository crxRepository;
 
+    /**
+     * Gets the selected CRX repository from the {@link IntelliVaultRepositorySelector} that is shown when an action is executed.
+     *
+     * @return  The selected {@link IntelliVaultCRXRepository} or null if the selection was cancelled.
+     * */
     public IntelliVaultCRXRepository getSelectedIntelliVaultCRXRepository() {
         return crxRepository;
     }
 
+
+    /**
+     * Sets the selected CRX repository from the {@link IntelliVaultRepositorySelector} that is shown when an action is executed.
+     *
+     * @param crxRepository The {@link IntelliVaultCRXRepository} to mark as selected.
+     * */
     public void setSelectedIntelliVaultCRXRepository(IntelliVaultCRXRepository crxRepository) {
         this.crxRepository = crxRepository;
     }

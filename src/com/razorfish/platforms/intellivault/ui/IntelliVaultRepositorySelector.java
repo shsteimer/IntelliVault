@@ -35,6 +35,7 @@ public class IntelliVaultRepositorySelector extends DialogWrapper {
         IntelliVaultPreferences preferences = preferenceService.getPreferences();
         List<IntelliVaultCRXRepository> repoList = preferences.getRepoConfigs();
 
+        // Add all configured repositories to the selector.
         for(IntelliVaultCRXRepository repo : repoList){
             comboRepositorySelector.addItem(repo);
         }
@@ -49,7 +50,6 @@ public class IntelliVaultRepositorySelector extends DialogWrapper {
     public void doOKAction() {
         IntelliVaultCRXRepository selectedRepository = (IntelliVaultCRXRepository)comboRepositorySelector.getSelectedItem();
         firingAction.setSelectedIntelliVaultCRXRepository(selectedRepository);
-        // add your code here
         super.doOKAction();
     }
 

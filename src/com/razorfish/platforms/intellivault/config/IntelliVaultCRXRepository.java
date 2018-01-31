@@ -20,7 +20,7 @@ public class IntelliVaultCRXRepository implements Serializable,Comparable<Intell
     private String password;
 
     /**
-     * Create a new instance, pre-populating the default values for url, username, and password.
+     * Create a new instance, pre-populating the default values for name, url, username, and password.
      */
     public IntelliVaultCRXRepository() {
         this.name = IntelliVaultConfigDefaults.REPO_NAME;
@@ -29,6 +29,9 @@ public class IntelliVaultCRXRepository implements Serializable,Comparable<Intell
         this.username = IntelliVaultConfigDefaults.REPO_USER;
     }
 
+    /**
+     * Create a new instance with the supplied name, url, username, password.
+     * */
     public IntelliVaultCRXRepository(String name, String repoUrl, String username, String password){
         this.name = name;
         this.repoUrl = repoUrl;

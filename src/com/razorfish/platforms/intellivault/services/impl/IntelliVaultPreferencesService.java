@@ -19,11 +19,6 @@ public class IntelliVaultPreferencesService implements PersistentStateComponent<
 
     private IntelliVaultPreferences preferences;
 
-    /**
-     * get the preferences.
-     *
-     * @return the preferences
-     */
     public IntelliVaultPreferences getPreferences() {
         if (preferences == null) {
             preferences = new IntelliVaultPreferences();
