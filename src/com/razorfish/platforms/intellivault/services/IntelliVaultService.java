@@ -1,11 +1,10 @@
 package com.razorfish.platforms.intellivault.services;
 
-import com.razorfish.platforms.intellivault.actions.VaultOperationDirectory;
-import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
-import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
-import com.razorfish.platforms.intellivault.config.IntelliVaultOperationConfig;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.progress.ProgressIndicator;
+import com.razorfish.platforms.intellivault.actions.VaultOperationDirectory;
+import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
+import com.razorfish.platforms.intellivault.config.IntelliVaultOperationConfig;
 import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
 
 /**

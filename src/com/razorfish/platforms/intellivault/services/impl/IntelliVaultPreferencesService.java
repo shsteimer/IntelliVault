@@ -29,7 +29,7 @@ public class IntelliVaultPreferencesService implements PersistentStateComponent<
             preferences = new IntelliVaultPreferences();
         }
 
-        return preferences;
+        return (IntelliVaultPreferences) preferences.clone();
     }
 
     public void setPreferences(IntelliVaultPreferences preferences) {

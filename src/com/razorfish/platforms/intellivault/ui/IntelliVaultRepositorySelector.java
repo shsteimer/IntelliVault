@@ -10,14 +10,13 @@ import com.razorfish.platforms.intellivault.services.impl.IntelliVaultPreference
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class IntelliVaultRepositorySelector extends DialogWrapper {
     private JPanel contentPane;
-    private JButton buttonOK;
-    private JButton buttonCancel;
     private JComboBox comboRepositorySelector;
 
     private IntelliVaultAbstractAction firingAction;
@@ -28,21 +27,15 @@ public class IntelliVaultRepositorySelector extends DialogWrapper {
         firingAction = myAction;
 
         setModal(true);
-        getRootPane().setDefaultButton(buttonOK);
-
-        buttonOK.addActionListener(e -> onOK());
-
-        buttonCancel.addActionListener(e -> onCancel());
 
         // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        contentPane.registerKeyboardAction(e -> doCancelAction(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         IntelliVaultPreferencesService preferenceService = ServiceManager.getService(IntelliVaultPreferencesService.class);
         IntelliVaultPreferences preferences = preferenceService.getPreferences();
-        Map<String,IntelliVaultCRXRepository> repositoryMap = preferences.getRepoConfigs();
+        List<IntelliVaultCRXRepository> repoList = preferences.getRepoConfigs();
 
-        Collection<IntelliVaultCRXRepository> rValues = repositoryMap.values();
-        for(IntelliVaultCRXRepository repo : rValues){
+        for(IntelliVaultCRXRepository repo : repoList){
             comboRepositorySelector.addItem(repo);
         }
 
@@ -52,18 +45,12 @@ public class IntelliVaultRepositorySelector extends DialogWrapper {
 
     }
 
-    private void onOK() {
-
+    @Override
+    public void doOKAction() {
         IntelliVaultCRXRepository selectedRepository = (IntelliVaultCRXRepository)comboRepositorySelector.getSelectedItem();
-
         firingAction.setSelectedIntelliVaultCRXRepository(selectedRepository);
         // add your code here
-        dispose();
-    }
-
-    private void onCancel() {
-        // add your code here if necessary
-        dispose();
+        super.doOKAction();
     }
 
     @Nullable

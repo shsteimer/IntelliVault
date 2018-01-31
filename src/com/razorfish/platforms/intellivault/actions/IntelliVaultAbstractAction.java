@@ -1,12 +1,5 @@
 package com.razorfish.platforms.intellivault.actions;
 
-import com.intellij.openapi.options.newEditor.SettingsDialog;
-import com.intellij.openapi.ui.DialogBuilder;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
-import com.razorfish.platforms.intellivault.config.IntelliVaultOperationConfig;
-import com.razorfish.platforms.intellivault.services.IntelliVaultService;
-import com.razorfish.platforms.intellivault.services.impl.IntelliVaultPreferencesService;
 import com.intellij.ide.IdeView;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -17,8 +10,14 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiDirectory;
+import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
+import com.razorfish.platforms.intellivault.config.IntelliVaultOperationConfig;
+import com.razorfish.platforms.intellivault.config.IntelliVaultPreferences;
+import com.razorfish.platforms.intellivault.services.IntelliVaultService;
+import com.razorfish.platforms.intellivault.services.impl.IntelliVaultPreferencesService;
 import com.razorfish.platforms.intellivault.ui.IntelliVaultRepositorySelector;
 
 /**
@@ -46,35 +45,44 @@ public abstract class IntelliVaultAbstractAction extends AnAction {
 
         final IntelliVaultOperationConfig conf = getIntelliVaultConfig();
 
-        final PsiDirectory psiDir = getCRXDirectory(evt);
-        final VaultOperationDirectory vaultOpDir = new VaultOperationDirectory(psiDir, conf.getRootFolderName());
-        Project project = evt.getData(PlatformDataKeys.PROJECT);
-        //TODO ask which repo config to use
-        if(crxRepository == null){
+        final IntelliVaultPreferences preferences = ServiceManager.getService(IntelliVaultPreferencesService.class).getPreferences();
+
+        if(preferences.hasRepositoryConfigs()){
+            final PsiDirectory psiDir = getCRXDirectory(evt);
+            final VaultOperationDirectory vaultOpDir = new VaultOperationDirectory(psiDir, conf.getRootFolderName());
+            Project project = evt.getData(PlatformDataKeys.PROJECT);
+
             final IntelliVaultRepositorySelector form = new IntelliVaultRepositorySelector(project,this);
             form.show();
+            log.info("form exit code is " + form.getExitCode() + " we need " + DialogWrapper.OK_EXIT_CODE);
             if (form.getExitCode() == DialogWrapper.OK_EXIT_CODE) {
                 IntelliVaultCRXRepository repository = getSelectedIntelliVaultCRXRepository();
-                boolean proceed = !conf.showMessageDialogs() ||
-                        (
-                            Messages.showYesNoDialog(
-                                String.format(
-                                    getDialogMessage(),
-                                    repository.getRepoUrl() + vaultOpDir.getJcrPath(),
-                                    vaultOpDir.getPsiDir().getVirtualFile().getCanonicalPath()
-                                ),
-                                "Run IntelliVault?",
-                                Messages.getQuestionIcon()
-                            ) == Messages.YES
-                        );
-                if (proceed) {
-                    ProgressManager.getInstance().run(getTask(vaultOpDir, conf, repository, project));
-                }else{
-                    log.debug("User canceled action after selecting a repository");
+                if(repository != null){
+                    boolean proceed = !conf.showMessageDialogs() ||
+                            (
+                                    Messages.showYesNoDialog(
+                                            String.format(
+                                                    getDialogMessage(),
+                                                    repository.getRepoUrl() + vaultOpDir.getJcrPath(),
+                                                    vaultOpDir.getPsiDir().getVirtualFile().getCanonicalPath()
+                                            ),
+                                            "Run IntelliVault?",
+                                            Messages.getQuestionIcon()
+                                    ) == Messages.YES
+                            );
+                    if (proceed) {
+                        ProgressManager.getInstance().run(getTask(vaultOpDir, conf, repository, project));
+                    }else{
+                        log.debug("User canceled action after selecting a repository");
+                    }
+                } else{
+                    log.warn("Cannot continue, selected repository is null");
                 }
             } else {
                 log.debug("User canceled action");
             }
+        } else {
+            Messages.showErrorDialog("You haven't set up any repositories yet. Go to File > Settings > IntelliVault to setup your repositories.","Cannot Perform Action");
         }
     }
 

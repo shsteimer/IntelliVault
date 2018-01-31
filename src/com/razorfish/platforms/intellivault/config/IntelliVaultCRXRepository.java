@@ -1,5 +1,7 @@
 package com.razorfish.platforms.intellivault.config;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 
 /**
@@ -9,7 +11,7 @@ import java.io.Serializable;
  * Time: 12:43 PM
  * To change this template use File | Settings | File Templates.
  */
-public class IntelliVaultCRXRepository implements Serializable{
+public class IntelliVaultCRXRepository implements Serializable,Comparable<IntelliVaultCRXRepository>,Cloneable{
 
     private static final long serialVersionUID = 8008135L;
     private String name;
@@ -21,7 +23,7 @@ public class IntelliVaultCRXRepository implements Serializable{
      * Create a new instance, pre-populating the default values for url, username, and password.
      */
     public IntelliVaultCRXRepository() {
-        this.name= "new repository";
+        this.name = IntelliVaultConfigDefaults.REPO_NAME;
         this.repoUrl = IntelliVaultConfigDefaults.REPO_URL;
         this.password = IntelliVaultConfigDefaults.REPO_PASSWORD;
         this.username = IntelliVaultConfigDefaults.REPO_USER;
@@ -61,9 +63,27 @@ public class IntelliVaultCRXRepository implements Serializable{
     public String getName(){ return name; }
     public void setName(String name){ this.name = name; }
 
+    public void replaceWith(IntelliVaultCRXRepository otherRepoConfig){
+        this.name = otherRepoConfig.getName();
+        this.repoUrl = otherRepoConfig.getRepoUrl();
+        this.username = otherRepoConfig.getUsername();
+        this.password = otherRepoConfig.getPassword();
+    }
 
     @Override
     public String toString(){
         return name;
+    }
+
+    @Override
+    public int compareTo(@NotNull IntelliVaultCRXRepository o) {
+        return getName().compareTo(o.getName());
+    }
+
+    @Override
+    public Object clone(){
+        IntelliVaultCRXRepository newRepo = new IntelliVaultCRXRepository();
+        newRepo.replaceWith(this);
+        return newRepo;
     }
 }

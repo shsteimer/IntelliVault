@@ -1,9 +1,5 @@
 package com.razorfish.platforms.intellivault.actions;
 
-import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
-import com.razorfish.platforms.intellivault.config.IntelliVaultOperationConfig;
-import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
-import com.razorfish.platforms.intellivault.services.IntelliVaultService;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.application.ApplicationManager;

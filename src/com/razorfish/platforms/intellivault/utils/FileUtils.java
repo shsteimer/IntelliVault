@@ -1,23 +1,16 @@
 package com.razorfish.platforms.intellivault.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import com.razorfish.platforms.intellivault.diff.FileComparator;
-import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
-import com.razorfish.platforms.intellivault.filter.Filter;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.ThrowableComputable;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
+import com.razorfish.platforms.intellivault.diff.FileComparator;
 import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
 import com.razorfish.platforms.intellivault.filter.Filter;
+
+import java.io.*;
 
 /**
  * FileUtiles is a set of static utility methods for itneracting with files.

@@ -1,6 +1,5 @@
 package com.razorfish.platforms.intellivault.actions;
 
-import com.razorfish.platforms.intellivault.utils.IntelliVaultConstants;
 import com.intellij.psi.PsiDirectory;
 import com.razorfish.platforms.intellivault.utils.IntelliVaultConstants;
 

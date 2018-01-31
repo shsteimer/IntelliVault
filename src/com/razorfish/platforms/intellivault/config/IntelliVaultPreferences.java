@@ -1,6 +1,9 @@
 package com.razorfish.platforms.intellivault.config;
 
 
+import com.intellij.openapi.vcs.history.VcsRevisionNumber;
+
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -11,12 +14,10 @@ import java.util.*;
  * Time: 10:58 PM
  * To change this template use File | Settings | File Templates.
  */
-public class IntelliVaultPreferences implements Serializable {
+public class IntelliVaultPreferences implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -7299400926047258802L;
-    public static final String REPO_USER_DELIMITER = "@";
 
-    //CHECKSTYLE:OFF
     public String vaultPath;
     public String tempDirectory;
     public String rootFolderName;
@@ -25,9 +26,9 @@ public class IntelliVaultPreferences implements Serializable {
     public boolean debug;
     public boolean logToConsole;
     public List<String> fileIgnorePatterns;
-    //CHECKSTYLE:ON
 
-    public Map<String, IntelliVaultCRXRepository> repoConfigs;
+    // Strictly typed to linked hashmap for serialization
+    public List<IntelliVaultCRXRepository> repoConfigs;
 
     /**
      * Create a default preferences object.
@@ -44,9 +45,7 @@ public class IntelliVaultPreferences implements Serializable {
         this.logToConsole = operationConfig.isLogToConsole();
 
         this.fileIgnorePatterns = operationConfig.getFileIgnorePatterns();
-
-        IntelliVaultCRXRepository repo = new IntelliVaultCRXRepository();
-        this.addRepositoryConfiguration("default",repo);
+        this.repoConfigs = new LinkedList<>();
     }
 
     /**
@@ -71,40 +70,78 @@ public class IntelliVaultPreferences implements Serializable {
         return operationConfig;
     }
 
-    public void addRepositoryConfiguration(final String repoName, final String url, final String username, final String password) {
-        IntelliVaultCRXRepository repo = new IntelliVaultCRXRepository(repoName,url,username,password);
-        addRepositoryConfiguration(repoName, repo);
+    public IntelliVaultCRXRepository putRepositoryConfiguration(final String repoName, final String url, final String username, final String password) {
+        IntelliVaultCRXRepository repo = new IntelliVaultCRXRepository(repoName, url, username, password);
+        putRepositoryConfiguration(repo);
+        return repo;
     }
 
-    public void addRepositoryConfiguration(final String repoName, IntelliVaultCRXRepository repo) {
-        if (this.repoConfigs == null) {
-            this.repoConfigs = new HashMap<>();
+    public void putRepositoryConfiguration(IntelliVaultCRXRepository repo) {
+        IntelliVaultCRXRepository existing = getRepositoryConfiguration(repo.getName());
+        if (existing != null) {
+            // Keep list order
+            existing.replaceWith(repo);
+        } else {
+            repoConfigs.add(repo);
         }
-
-        this.repoConfigs.put(repoName, repo);
     }
 
-    public void removeRepositoryConfiguration(final String repoName){
-        this.repoConfigs.remove(repoName);
+    public void removeRepositoryConfiguration(final String repoName) {
+        IntelliVaultCRXRepository repository = getRepositoryConfiguration(repoName);
+        this.repoConfigs.remove(repository);
     }
 
-    public void getRepositoryConfiguration(final String repoName){
-        this.repoConfigs.get(repoName);
+    public IntelliVaultCRXRepository getRepositoryConfiguration(final String repoName) {
+        for (IntelliVaultCRXRepository repo : repoConfigs) {
+            if (repo.getName().equals(repoName)) {
+                return repo;
+            }
+        }
+        return null;
     }
 
-    public Map<String, IntelliVaultCRXRepository> getRepoConfigs(){
+    public List<IntelliVaultCRXRepository> getRepoConfigs() {
         return repoConfigs;
     }
 
-    public IntelliVaultCRXRepository getFirstRepositoryConfiguration(){
-        Collection<IntelliVaultCRXRepository> collRepo = repoConfigs.values();
-        List<IntelliVaultCRXRepository> listRepos;
-        if (collRepo instanceof List){
-            listRepos = (List<IntelliVaultCRXRepository>)collRepo;
-        } else {
-            listRepos = new ArrayList<>(collRepo);
+    public IntelliVaultCRXRepository getFirstRepositoryConfiguration() {
+        return repoConfigs.size() > 0 ? repoConfigs.get(0) : null;
+    }
+
+    public boolean hasRepositoryConfigs() {
+        return !getRepoConfigs().isEmpty();
+    }
+
+    private void readObject(java.io.ObjectInputStream in)
+            throws IOException, ClassNotFoundException {
+
+        getRepoConfigs().sort(Comparator.naturalOrder());
+
+        in.defaultReadObject();
+    }
+
+    public Object clone() {
+        IntelliVaultPreferences prefs = new IntelliVaultPreferences();
+        prefs.vaultPath = vaultPath;
+
+        prefs.tempDirectory = tempDirectory;
+        prefs.rootFolderName = rootFolderName;
+        prefs.verbose = verbose;
+        prefs.showDialogs = showDialogs;
+        prefs.debug = debug;
+        prefs.logToConsole = logToConsole;
+        if(fileIgnorePatterns != null){
+            prefs.fileIgnorePatterns.clear(); // Remove defaults
+            prefs.fileIgnorePatterns.addAll(fileIgnorePatterns);
         }
 
-        return listRepos.get(0);
+        if(repoConfigs !=  null){
+            for(IntelliVaultCRXRepository repo : repoConfigs){
+                prefs.repoConfigs.add((IntelliVaultCRXRepository) repo.clone());
+            }
+        }
+
+        return prefs;
     }
+
 }

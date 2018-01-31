@@ -1,0 +1,73 @@
+<idea-plugin>
+  <id>com.crownpartners.intellivault</id>
+  <name>IntelliVault</name>
+  <version>0.10.0</version>
+  <vendor email="sean.steimer@razorfish.com"
+          url="http://technologyplatforms.razorfish.com/">Razorfish Platforms
+  </vendor>
+
+  <description><![CDATA[
+      <p>A plugin for IntelliJ IDEA to interact with a CRX repository via the FileVault tool which is
+      packaged with Adobe AEM/CQ.</p>
+      <p>This plugin is largely based upon, and liberally borrows from, <a href="http://vaultclipse.sourceforge.net/">VaultClipse</a>
+      which is a plugin for the Eclipse IDE for interacting with FileVault.</p>
+      <p>The plugin source can be found on <a href="https://github.com/shsteimer/IntelliVault">Github</a></p>
+    ]]>
+  </description>
+
+  <change-notes><![CDATA[
+     <ul>
+      <li>v0.9.1: Added logging of output to the console, removed extraneous dialog options.</li>
+      <li>v0.9.2: Fixing an issue where the temp directory isn't always deleted.</li>
+      <li>v0.9.3: Updates to plugin metadata.</li>
+      <li>v0.9.4: Merged PR from sdehandt; Added option to bypass message dialogs.  Also re-branded to Razorfish Platforms and added support for VLT 3.</li>
+      <li>v0.9.5: Fixed compile version to use JDK 1.6</li>
+      <li>v0.10.0: Added multiple repository profiles and ability to select from run dialogs </li>
+      </ul>
+      ]]>
+  </change-notes>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="173.0"/>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+  <actions>
+    <action id="IntelliVault.Plugin.Import"
+            class="com.razorfish.platforms.intellivault.actions.IntelliVaultImportAction"
+            text="Push to CRX..."
+            description="Import a node or set of nodes into CRX from the local IntelliJ IDEA project.">
+    </action>
+    <action id="IntelliVault.Plugin.Export"
+            class="com.razorfish.platforms.intellivault.actions.IntelliVaultExportAction"
+            text="Pull from CRX..."
+            description="Export a node or a set of nodes from CRX into the local IntelliJ IDEA project.">
+    </action>
+
+
+    <group id="IntelliVault.Plugin.ActionGroup" text="_IntelliVault" description="IntelliVault" popup="true">
+      <reference ref="IntelliVault.Plugin.Export"/>
+      <reference ref="IntelliVault.Plugin.Import"/>
+
+      <add-to-group group-id="ProjectViewPopupMenu" anchor="last"
+                    relative-to-action="ProjectViewPopupMenuRefactoringGroup"/>
+    </group>
+  </actions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationService serviceInterface="com.razorfish.platforms.intellivault.services.IntelliVaultService"
+                        serviceImplementation="com.razorfish.platforms.intellivault.services.impl.IntelliVaultServiceImpl">
+    </applicationService>
+    <applicationService serviceInterface="com.razorfish.platforms.intellivault.services.VaultInvokerService"
+                        serviceImplementation="com.razorfish.platforms.intellivault.services.impl.VaultInvokerServiceImpl">
+    </applicationService>
+    <applicationService
+            serviceImplementation="com.razorfish.platforms.intellivault.services.impl.IntelliVaultPreferencesService"/>
+    <applicationConfigurable
+            implementation="com.razorfish.platforms.intellivault.ui.IntelliVaultSettings"></applicationConfigurable>
+  </extensions>
+
+</idea-plugin>
