@@ -14,6 +14,8 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
@@ -68,42 +70,68 @@ public class IntelliVaultSettings implements Configurable {
         IntelliVaultPreferencesService preferencesService = ServiceManager.getService(IntelliVaultPreferencesService.class);
         userPreferences = preferencesService.getPreferences();
 
-        btnTempDirBrowse.addActionListener(e -> {
-            JFileChooser chooser = new JFileChooser();
-            String currentDirectory = txtTempDir.getText() != null && txtTempDir.getText().length() > 0 ?
-                    txtTempDir.getText() : CURRENT_DIRECTORY_SYMBOL;
-            chooser.setCurrentDirectory(new java.io.File(currentDirectory));
-            chooser.setDialogTitle("Select Temp Directory");
-            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            chooser.setAcceptAllFileFilterUsed(false);
+        btnTempDirBrowse.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser chooser = new JFileChooser();
+                String currentDirectory = txtTempDir.getText() != null && txtTempDir.getText().length() > 0 ?
+                        txtTempDir.getText() : CURRENT_DIRECTORY_SYMBOL;
+                chooser.setCurrentDirectory(new java.io.File(currentDirectory));
+                chooser.setDialogTitle("Select Temp Directory");
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                chooser.setAcceptAllFileFilterUsed(false);
 
-            // Demonstrate "Open" dialog:
-            int rVal = chooser.showOpenDialog(jPanel);
-            if (rVal == JFileChooser.APPROVE_OPTION) {
-                txtTempDir.setText(chooser.getSelectedFile().getAbsolutePath());
+                // Demonstrate "Open" dialog:
+                int rVal = chooser.showOpenDialog(jPanel);
+                if (rVal == JFileChooser.APPROVE_OPTION) {
+                    txtTempDir.setText(chooser.getSelectedFile().getAbsolutePath());
+                }
             }
         });
 
-        btnVaultDirBrowse.addActionListener(e -> {
-            JFileChooser chooser = new JFileChooser();
-            String curDir = txtVaultDir.getText() != null && txtVaultDir.getText().length() > 0
-                    ? txtVaultDir.getText() : CURRENT_DIRECTORY_SYMBOL;
-            chooser.setCurrentDirectory(new java.io.File(curDir));
-            chooser.setDialogTitle("Select Vault Directory");
-            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            chooser.setAcceptAllFileFilterUsed(false);
+        btnVaultDirBrowse.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser chooser = new JFileChooser();
+                String curDir = txtVaultDir.getText() != null && txtVaultDir.getText().length() > 0
+                        ? txtVaultDir.getText() : CURRENT_DIRECTORY_SYMBOL;
+                chooser.setCurrentDirectory(new java.io.File(curDir));
+                chooser.setDialogTitle("Select Vault Directory");
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                chooser.setAcceptAllFileFilterUsed(false);
 
-            // Demonstrate "Open" dialog:
-            int rVal = chooser.showOpenDialog(jPanel);
-            if (rVal == JFileChooser.APPROVE_OPTION) {
-                txtVaultDir.setText(chooser.getSelectedFile().getAbsolutePath());
+                // Demonstrate "Open" dialog:
+                int rVal = chooser.showOpenDialog(jPanel);
+                if (rVal == JFileChooser.APPROVE_OPTION) {
+                    txtVaultDir.setText(chooser.getSelectedFile().getAbsolutePath());
+                }
             }
         });
 
-        btnRestoreDefaults.addActionListener(e -> setDialogStateFromPreferences(new IntelliVaultPreferences()));
-        btnDeleteRepository.addActionListener(e -> deleteCurrentlySelectedRepository());
-        btnSaveRepository.addActionListener(e -> saveCurrentRepository());
-        comboProfileSelect.addActionListener(e -> loadSelectedRepository());
+        btnRestoreDefaults.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setDialogStateFromPreferences(new IntelliVaultPreferences());
+            }
+        });
+        btnDeleteRepository.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deleteCurrentlySelectedRepository();
+            }
+        });
+        btnSaveRepository.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveCurrentRepository();
+            }
+        });
+        comboProfileSelect.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadSelectedRepository();
+            }
+        });
 
         return jPanel;
     }
@@ -125,7 +153,7 @@ public class IntelliVaultSettings implements Configurable {
 
     /**
      * Saves the {@link IntelliVaultPreferences} back to the {@link IntelliVaultPreferencesService}
-     * */
+     */
     private void save() {
         IntelliVaultPreferencesService preferencesService = ServiceManager.getService(IntelliVaultPreferencesService.class);
         injectPreferencesFromDialogState(userPreferences);
@@ -159,7 +187,7 @@ public class IntelliVaultSettings implements Configurable {
 
     /**
      * Removes the currently selected {@link IntelliVaultCRXRepository} from the current {@link IntelliVaultPreferences} state.
-     * */
+     */
     private void deleteCurrentlySelectedRepository() {
         Object selectedItem = comboProfileSelect.getSelectedItem();
         if (selectedItem != null) {
@@ -175,21 +203,21 @@ public class IntelliVaultSettings implements Configurable {
 
     /**
      * Puts the current {@link IntelliVaultCRXRepository} state in the {@link IntelliVaultPreferences} repository list.
-     * */
+     */
     private void saveCurrentRepository() {
         String repoName = txtRepoName.getText();
 
         // Setup the new repository.
         IntelliVaultCRXRepository newRepo = new IntelliVaultCRXRepository(
-            repoName,
-            txtRepoUrl.getText(),
-            txtUsername.getText(),
-            txtPassword.getText()
+                repoName,
+                txtRepoUrl.getText(),
+                txtUsername.getText(),
+                txtPassword.getText()
         );
 
         // Check if this put request is replacing an old repository configuration.
         IntelliVaultCRXRepository oldRepo = null;
-        if(!repoName.equals(lastLoadedRepo) && lastLoadedRepo != null){
+        if (!repoName.equals(lastLoadedRepo) && lastLoadedRepo != null) {
             oldRepo = userPreferences.getRepositoryConfiguration(lastLoadedRepo);
         }
 
@@ -201,10 +229,10 @@ public class IntelliVaultSettings implements Configurable {
             // Repo name didn't change
             // This creates a new or overwrites an old. The above steps ensure renaming happens properly.
             newRepo = userPreferences.putRepositoryConfiguration(
-                repoName,
-                txtRepoUrl.getText(),
-                txtUsername.getText(),
-                txtPassword.getText()
+                    repoName,
+                    txtRepoUrl.getText(),
+                    txtUsername.getText(),
+                    txtPassword.getText()
             );
         }
 
@@ -216,7 +244,7 @@ public class IntelliVaultSettings implements Configurable {
     /**
      * Sets the dialog state to reflect the newly selected {@link IntelliVaultCRXRepository}
      * If the user chooses the "Create New Repository..." option a new repository will be added to the {@link IntelliVaultPreferences} state.
-     * */
+     */
     private void loadSelectedRepository() {
         Object selectedItem = comboProfileSelect.getSelectedItem();
         if (selectedItem != null) {
@@ -261,8 +289,9 @@ public class IntelliVaultSettings implements Configurable {
 
     /**
      * Sets the dialog state to represent a {@link IntelliVaultCRXRepository}.
+     *
      * @param repository The {@link IntelliVaultCRXRepository} to update the ui values with.
-     * */
+     */
     private void setDialogStateFromRepository(IntelliVaultCRXRepository repository) {
         if (repository != null) {
             txtRepoName.setText(repository.getName());
@@ -281,18 +310,18 @@ public class IntelliVaultSettings implements Configurable {
      * Rebuilds the combo box that represents the current {@link IntelliVaultPreferences} state's {@link IntelliVaultCRXRepository} list.
      *
      * @param selectedItem An optional item to set as the selected item after rebuild.
-     * */
-    private void rebuildRepositoryComboBox(IntelliVaultCRXRepository selectedItem){
+     */
+    private void rebuildRepositoryComboBox(IntelliVaultCRXRepository selectedItem) {
         comboProfileSelect.removeAllItems();
         comboProfileSelect.addItem("Create New Repository...");
         List<IntelliVaultCRXRepository> rValues = userPreferences.getRepoConfigs();
         for (IntelliVaultCRXRepository repo : rValues) {
             comboProfileSelect.addItem(repo);
         }
-        if(selectedItem == null){
+        if (selectedItem == null) {
             selectedItem = userPreferences.getFirstRepositoryConfiguration();
         }
-        if(selectedItem != null){
+        if (selectedItem != null) {
             comboProfileSelect.setSelectedItem(selectedItem);
         }
         setDialogStateFromRepository(selectedItem);

@@ -10,6 +10,8 @@ import com.razorfish.platforms.intellivault.services.impl.IntelliVaultPreference
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.List;
@@ -28,15 +30,20 @@ public class IntelliVaultRepositorySelector extends DialogWrapper {
 
         setModal(true);
 
-        // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(e -> doCancelAction(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        // call onCancel() on ESCAPE;
+        contentPane.registerKeyboardAction(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doCancelAction();
+            }
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         IntelliVaultPreferencesService preferenceService = ServiceManager.getService(IntelliVaultPreferencesService.class);
         IntelliVaultPreferences preferences = preferenceService.getPreferences();
         List<IntelliVaultCRXRepository> repoList = preferences.getRepoConfigs();
 
         // Add all configured repositories to the selector.
-        for(IntelliVaultCRXRepository repo : repoList){
+        for (IntelliVaultCRXRepository repo : repoList) {
             comboRepositorySelector.addItem(repo);
         }
 
@@ -48,7 +55,7 @@ public class IntelliVaultRepositorySelector extends DialogWrapper {
 
     @Override
     public void doOKAction() {
-        IntelliVaultCRXRepository selectedRepository = (IntelliVaultCRXRepository)comboRepositorySelector.getSelectedItem();
+        IntelliVaultCRXRepository selectedRepository = (IntelliVaultCRXRepository) comboRepositorySelector.getSelectedItem();
         firingAction.setSelectedIntelliVaultCRXRepository(selectedRepository);
         super.doOKAction();
     }

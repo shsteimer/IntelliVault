@@ -46,7 +46,7 @@ public class IntelliVaultPreferences implements Serializable, Cloneable {
         this.logToConsole = operationConfig.isLogToConsole();
 
         this.fileIgnorePatterns = operationConfig.getFileIgnorePatterns();
-        this.repoConfigs = new LinkedList<>();
+        this.repoConfigs = new LinkedList<IntelliVaultCRXRepository>();
     }
 
     /**
@@ -150,7 +150,7 @@ public class IntelliVaultPreferences implements Serializable, Cloneable {
     private void readObject(java.io.ObjectInputStream in)
             throws IOException, ClassNotFoundException {
 
-        getRepoConfigs().sort(Comparator.naturalOrder());
+        Collections.sort(getRepoConfigs());
 
         in.defaultReadObject();
     }

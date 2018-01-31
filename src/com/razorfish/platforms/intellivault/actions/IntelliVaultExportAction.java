@@ -72,8 +72,11 @@ public class IntelliVaultExportAction extends IntelliVaultAbstractAction {
             toolWindow.getContentManager().setSelectedContent(content);
             //TODO toolWindow.setIcon();
 
-            toolWindow.show(() -> {
-                //To change body of implemented methods use File | Settings | File Templates.
+            toolWindow.show(new Runnable() {
+                @Override
+                public void run() {
+                    // Do nothing
+                }
             });
         }
 
@@ -84,14 +87,22 @@ public class IntelliVaultExportAction extends IntelliVaultAbstractAction {
                 vaultService.vaultExport(repository, conf, vaultOpDir, progressIndicator, console);
 
                 if (conf.showMessageDialogs()) {
-                    ApplicationManager.getApplication().invokeLater(
-                            () -> Messages.showInfoMessage(String.format("Successfully Exported from %s.",
-                            repository.getRepoUrl() + vaultOpDir.getJcrPath()),
-                            "IntelliVault Export Completed Successfully!")
-                    );
+                    ApplicationManager.getApplication().invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            Messages.showInfoMessage(String.format("Successfully Exported from %s.",
+                                    repository.getRepoUrl() + vaultOpDir.getJcrPath()),
+                                    "IntelliVault Export Completed Successfully!");
+                        }
+                    });
                 }
             } catch (final IntelliVaultException e) {
-                ApplicationManager.getApplication().invokeLater(() -> Messages.showErrorDialog(e.getLocalizedMessage(), "IntelliVault Error!"));
+                ApplicationManager.getApplication().invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        Messages.showErrorDialog(e.getLocalizedMessage(), "IntelliVault Error!");
+                    }
+                });
 
             }
         }

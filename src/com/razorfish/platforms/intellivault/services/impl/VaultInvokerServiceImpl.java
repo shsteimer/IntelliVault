@@ -52,7 +52,15 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
                 Thread.currentThread().setContextClassLoader(cl);
             }
 
-        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IOException | IllegalAccessException e) {
+        } catch (ClassNotFoundException e) {
+            throw new IntelliVaultException(e);
+        } catch (NoSuchMethodException e) {
+            throw new IntelliVaultException(e);
+        } catch (InvocationTargetException e) {
+            throw new IntelliVaultException(e);
+        } catch (IOException e) {
+            throw new IntelliVaultException(e);
+        } catch (IllegalAccessException e) {
             throw new IntelliVaultException(e);
         }
 

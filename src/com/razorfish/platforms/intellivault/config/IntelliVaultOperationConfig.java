@@ -33,7 +33,7 @@ public class IntelliVaultOperationConfig {
         this.verbose= IntelliVaultConfigDefaults.VERBOSE;
         this.debug= IntelliVaultConfigDefaults.DEBUG;
         this.logToConsole= IntelliVaultConfigDefaults.CONSOLE_LOG;
-        this.fileIgnorePatterns = new LinkedList<>(Arrays.asList(IntelliVaultConfigDefaults.IGNORE_PATTERNS.split(",")));
+        this.fileIgnorePatterns = new LinkedList<String>(Arrays.asList(IntelliVaultConfigDefaults.IGNORE_PATTERNS.split(",")));
         this.showMessageDialogs = IntelliVaultConfigDefaults.SHOW_MESSAGE_DIALOG;
     }
 
