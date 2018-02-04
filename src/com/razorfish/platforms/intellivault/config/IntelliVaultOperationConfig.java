@@ -1,6 +1,7 @@
 package com.razorfish.platforms.intellivault.config;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -26,13 +27,13 @@ public class IntelliVaultOperationConfig {
      * Create a new instance using the default value for all fields of the operation config
      */
     public IntelliVaultOperationConfig() {
-        this.vaultPath=IntelliVaultConfigDefaults.VAULT_PATH;
+        this.vaultPath= IntelliVaultConfigDefaults.VAULT_PATH;
         this.tempDirectory=System.getProperty(TEMP_DIR_PROP);
-        this.rootFolderName=IntelliVaultConfigDefaults.ROOT_FOLDER;
-        this.verbose=IntelliVaultConfigDefaults.VERBOSE;
-        this.debug=IntelliVaultConfigDefaults.DEBUG;
-        this.logToConsole=IntelliVaultConfigDefaults.CONSOLE_LOG;
-        this.fileIgnorePatterns = Arrays.asList(IntelliVaultConfigDefaults.IGNORE_PATTERNS.split(","));
+        this.rootFolderName= IntelliVaultConfigDefaults.ROOT_FOLDER;
+        this.verbose= IntelliVaultConfigDefaults.VERBOSE;
+        this.debug= IntelliVaultConfigDefaults.DEBUG;
+        this.logToConsole= IntelliVaultConfigDefaults.CONSOLE_LOG;
+        this.fileIgnorePatterns = new LinkedList<String>(Arrays.asList(IntelliVaultConfigDefaults.IGNORE_PATTERNS.split(",")));
         this.showMessageDialogs = IntelliVaultConfigDefaults.SHOW_MESSAGE_DIALOG;
     }
 

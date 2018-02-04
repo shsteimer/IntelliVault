@@ -1,7 +1,6 @@
 package com.razorfish.platforms.intellivault.services;
 
 import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
-import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
 
 /**
  * Created with IntelliJ IDEA.

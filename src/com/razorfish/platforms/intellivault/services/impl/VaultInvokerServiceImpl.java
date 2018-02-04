@@ -58,9 +58,9 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
             throw new IntelliVaultException(e);
         } catch (InvocationTargetException e) {
             throw new IntelliVaultException(e);
-        } catch (IllegalAccessException e) {
-            throw new IntelliVaultException(e);
         } catch (IOException e) {
+            throw new IntelliVaultException(e);
+        } catch (IllegalAccessException e) {
             throw new IntelliVaultException(e);
         }
 

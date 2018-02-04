@@ -1,9 +1,5 @@
 package com.razorfish.platforms.intellivault.actions;
 
-import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
-import com.razorfish.platforms.intellivault.config.IntelliVaultOperationConfig;
-import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
-import com.razorfish.platforms.intellivault.services.IntelliVaultService;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.application.ApplicationManager;
@@ -31,7 +27,7 @@ public class IntelliVaultExportAction extends IntelliVaultAbstractAction {
     @Override
     protected Task getTask(VaultOperationDirectory vaultOpDir, IntelliVaultOperationConfig conf,
                            IntelliVaultCRXRepository repository, Project project) {
-        return new IntelliVaultExportTask(vaultOpDir,conf,repository, project);
+        return new IntelliVaultExportTask(vaultOpDir, conf, repository, project);
     }
 
     protected String getDialogMessage() {
@@ -47,20 +43,25 @@ public class IntelliVaultExportAction extends IntelliVaultAbstractAction {
 
         public IntelliVaultExportTask(final VaultOperationDirectory vaultOpDir, final IntelliVaultOperationConfig conf,
                                       final IntelliVaultCRXRepository repository, final Project project) {
-            super(project,"Running IntelliVault Export Action");
-            this.conf=conf;
-            this.repository=repository;
-            this.vaultOpDir=vaultOpDir;
 
+            super(project, "Running IntelliVault Export Action");
 
+            this.conf = conf;
+            this.repository = repository;
+            this.vaultOpDir = vaultOpDir;
 
             TextConsoleBuilderFactory factory = TextConsoleBuilderFactory.getInstance();
             this.console = factory.createBuilder(project).getConsole();
 
+            createToolWindow(project);
+
+        }
+
+        private void createToolWindow(final Project project){
             ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
             String twId = "IntelliVault";
             ToolWindow toolWindow = toolWindowManager.getToolWindow(twId);
-            if(toolWindow==null) {
+            if (toolWindow == null) {
                 toolWindow = toolWindowManager.registerToolWindow(twId, true, ToolWindowAnchor.BOTTOM);
             }
 
@@ -74,7 +75,7 @@ public class IntelliVaultExportAction extends IntelliVaultAbstractAction {
             toolWindow.show(new Runnable() {
                 @Override
                 public void run() {
-                    //To change body of implemented methods use File | Settings | File Templates.
+                    // Do nothing
                 }
             });
         }
@@ -90,7 +91,7 @@ public class IntelliVaultExportAction extends IntelliVaultAbstractAction {
                         @Override
                         public void run() {
                             Messages.showInfoMessage(String.format("Successfully Exported from %s.",
-                                    new Object[]{repository.getRepoUrl() + vaultOpDir.getJcrPath()}),
+                                    repository.getRepoUrl() + vaultOpDir.getJcrPath()),
                                     "IntelliVault Export Completed Successfully!");
                         }
                     });
