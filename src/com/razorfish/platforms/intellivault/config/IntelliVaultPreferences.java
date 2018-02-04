@@ -4,6 +4,7 @@ import com.razorfish.platforms.intellivault.services.impl.IntelliVaultPreference
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class IntelliVaultPreferences implements Serializable, Cloneable {
         this.logToConsole = operationConfig.isLogToConsole();
 
         this.fileIgnorePatterns = operationConfig.getFileIgnorePatterns();
-        this.repoConfigList = new LinkedList<IntelliVaultCRXRepository>();
+        this.repoConfigList = new LinkedList<>();
         this.lastUsedRepoName = null;
     }
 
@@ -187,4 +188,18 @@ public class IntelliVaultPreferences implements Serializable, Cloneable {
         return prefs;
     }
 
+    public List<IntelliVaultCRXRepository> getDefaultRepos() {
+        List<IntelliVaultCRXRepository> repos = new ArrayList<>();
+
+        IntelliVaultCRXRepository author = new IntelliVaultCRXRepository();
+        author.setName(IntelliVaultConfigDefaults.REPO_NAME_AUTHOR);
+        repos.add(author);
+
+        IntelliVaultCRXRepository publish = new IntelliVaultCRXRepository();
+        publish.setName(IntelliVaultConfigDefaults.REPO_NAME_PUBLISH);
+        publish.setRepoUrl(IntelliVaultConfigDefaults.REPO_URL_PUBLISH);
+        repos.add(publish);
+
+        return repos;
+    }
 }
