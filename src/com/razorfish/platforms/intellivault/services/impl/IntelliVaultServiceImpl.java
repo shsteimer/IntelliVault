@@ -105,7 +105,7 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
                         Messages.showErrorDialog(e.getLocalizedMessage(), "IntelliVault Error!");
                     }
                 }
-            }, ModalityState.any());
+            }, ModalityState.NON_MODAL);
 
         } finally {
             if (!opConf.isDebug()) {
