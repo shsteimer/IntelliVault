@@ -25,6 +25,7 @@ public class IntelliVaultPreferences implements Serializable, Cloneable {
     public List<String> fileIgnorePatterns;
 
     public List<IntelliVaultCRXRepository> repoConfigList;
+    public String lastUsedRepoName;
 
     /**
      * Create a default preferences object.
@@ -42,6 +43,7 @@ public class IntelliVaultPreferences implements Serializable, Cloneable {
 
         this.fileIgnorePatterns = operationConfig.getFileIgnorePatterns();
         this.repoConfigList = new LinkedList<IntelliVaultCRXRepository>();
+        this.lastUsedRepoName = null;
     }
 
     /**
@@ -119,6 +121,10 @@ public class IntelliVaultPreferences implements Serializable, Cloneable {
         return repoConfigList;
     }
 
+    public String getLastUsedRepoName() {
+        return lastUsedRepoName;
+    }
+
     /**
      * Convenience method to return the first {@link IntelliVaultCRXRepository} or null if none are setup yet.
      *
@@ -175,6 +181,8 @@ public class IntelliVaultPreferences implements Serializable, Cloneable {
                 prefs.repoConfigList.add((IntelliVaultCRXRepository) repo.clone());
             }
         }
+
+        prefs.lastUsedRepoName = this.lastUsedRepoName;
 
         return prefs;
     }

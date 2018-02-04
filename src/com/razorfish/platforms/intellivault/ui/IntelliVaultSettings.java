@@ -51,6 +51,7 @@ public class IntelliVaultSettings implements Configurable {
     private JTextField txtRepoName;
 
     private IntelliVaultPreferences userPreferences;
+    private String lastLoadedRepo = null;
 
     @Nls
     @Override
@@ -238,8 +239,6 @@ public class IntelliVaultSettings implements Configurable {
 
         rebuildRepositoryComboBox(newRepo);
     }
-
-    private String lastLoadedRepo = null;
 
     /**
      * Sets the dialog state to reflect the newly selected {@link IntelliVaultCRXRepository}
