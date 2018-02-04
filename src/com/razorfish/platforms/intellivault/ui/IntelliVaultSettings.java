@@ -314,7 +314,7 @@ public class IntelliVaultSettings implements Configurable {
     private void rebuildRepositoryComboBox(IntelliVaultCRXRepository selectedItem) {
         comboProfileSelect.removeAllItems();
         comboProfileSelect.addItem("Create New Repository...");
-        List<IntelliVaultCRXRepository> rValues = userPreferences.getRepoConfigs();
+        List<IntelliVaultCRXRepository> rValues = userPreferences.getRepoConfigList();
         for (IntelliVaultCRXRepository repo : rValues) {
             comboProfileSelect.addItem(repo);
         }

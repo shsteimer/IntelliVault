@@ -13,9 +13,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public class IntelliVaultRepositorySelector extends DialogWrapper {
     private JPanel contentPane;
@@ -40,7 +38,7 @@ public class IntelliVaultRepositorySelector extends DialogWrapper {
 
         IntelliVaultPreferencesService preferenceService = ServiceManager.getService(IntelliVaultPreferencesService.class);
         IntelliVaultPreferences preferences = preferenceService.getPreferences();
-        List<IntelliVaultCRXRepository> repoList = preferences.getRepoConfigs();
+        List<IntelliVaultCRXRepository> repoList = preferences.getRepoConfigList();
 
         // Add all configured repositories to the selector.
         for (IntelliVaultCRXRepository repo : repoList) {
