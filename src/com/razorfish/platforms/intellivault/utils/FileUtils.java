@@ -10,7 +10,12 @@ import com.razorfish.platforms.intellivault.diff.FileComparator;
 import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
 import com.razorfish.platforms.intellivault.filter.Filter;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * FileUtils is a set of static utility methods for interacting with files.
@@ -18,8 +23,9 @@ import java.io.*;
  * and virtual files within the intelliJ IDEA Project file system.
  */
 public class FileUtils {
-    private static final String VAULTCLIPSE_TEMP_DIR_NAME = "IntelliVault";
+
     public static final int BUFFER_LENGTH = 1024;
+    private static final String VAULTCLIPSE_TEMP_DIR_NAME = "IntelliVault";
     private static final boolean IGNORE_WHITESPACE = false;
 
     /**
@@ -32,15 +38,14 @@ public class FileUtils {
     /**
      * Create a temporary directory on the file system, which will be used as
      * the base directory for a vault operation.
-     * 
-     * @param userTempDir
-     *            the user's temporary directory, where the tempdir will be
-     *            created.
+     *
+     * @param userTempDir the user's temporary directory, where the tempdir will be
+     *                    created.
      * @return a java.io.File instance representing the newly created directory.
      */
     public static File createTempDirectory(String userTempDir) {
-        File baseDir = new File(userTempDir + File.separator + VAULTCLIPSE_TEMP_DIR_NAME + File.separator
-                + System.currentTimeMillis());
+        File baseDir = new File(userTempDir + File.separator + VAULTCLIPSE_TEMP_DIR_NAME + File.separator + System
+                .currentTimeMillis());
         baseDir.mkdirs();
 
         return baseDir;
@@ -49,26 +54,21 @@ public class FileUtils {
     /**
      * Copy the contents of an import operation from the IDEA project directory
      * to the vault temp directory.
-     * 
-     * @param importBaseDir
-     *            the file system directory, which serves as the root of the
-     *            copy target
-     * @param importDir
-     *            the PsiDirectory (IDEA virtual directory) containing the
-     *            contents to be copied
-     * @param path
-     *            the jcr path representing the root of the import
-     * @param filter
-     *            A list of Filters specifying which files should be ignored
-     *            (not imported).
-     * 
-     * @throws com.razorfish.platforms.intellivault.exceptions.IntelliVaultException
-     *             if an error occurs during copy
+     *
+     * @param importBaseDir the file system directory, which serves as the root of the
+     *                      copy target
+     * @param importDir     the PsiDirectory (IDEA virtual directory) containing the
+     *                      contents to be copied
+     * @param path          the jcr path representing the root of the import
+     * @param filter        A list of Filters specifying which files should be ignored
+     *                      (not imported).
+     * @throws com.razorfish.platforms.intellivault.exceptions.IntelliVaultException if an error occurs during copy
      */
     public static void copyImportContents(File importBaseDir, PsiDirectory importDir, String path,
             Filter<VirtualFile> filter) throws IntelliVaultException {
-        File copyRootDir = new File(importBaseDir.getAbsolutePath() + File.separator + IntelliVaultConstants.JCR_ROOT
-                + path.replace(IntelliVaultConstants.JCR_PATH_SEPERATOR, File.separator));
+        File copyRootDir = new File(
+                importBaseDir.getAbsolutePath() + File.separator + IntelliVaultConstants.JCR_ROOT + path
+                        .replace(IntelliVaultConstants.JCR_PATH_SEPERATOR, File.separator));
         copyRootDir.mkdirs();
 
         try {
@@ -84,17 +84,13 @@ public class FileUtils {
      * it is a directory, a new directory is created in fsDir, and this method
      * is called recursively. If the child is a file, then that file is created
      * and the content copied.
-     * 
-     * @param fsDir
-     *            th file system directory where contents will be copied
-     * @param virtualFile
-     *            the VirtualFile in the IDEA project being copied to fsDir. In
-     *            practice this is always a directory.
-     * @param filter
-     *            A list of Filters specifying which files should be ignored
-     *            (not imported).
-     * @throws IOException
-     *             if an error occurs during copy
+     *
+     * @param fsDir       th file system directory where contents will be copied
+     * @param virtualFile the VirtualFile in the IDEA project being copied to fsDir. In
+     *                    practice this is always a directory.
+     * @param filter      A list of Filters specifying which files should be ignored
+     *                    (not imported).
+     * @throws IOException if an error occurs during copy
      */
     private static void copyImportContents(File fsDir, VirtualFile virtualFile, Filter<VirtualFile> filter)
             throws IOException {
@@ -112,8 +108,9 @@ public class FileUtils {
                         ins = file.getInputStream();
                         writeFile(file.getInputStream(), fsDir.getAbsolutePath() + File.separator + file.getName());
                     } finally {
-                        if(ins!=null){
-                            ins.close();;
+                        if (ins != null) {
+                            ins.close();
+                            ;
                         }
                     }
                 }
@@ -123,9 +120,9 @@ public class FileUtils {
 
     public static void copyExportContents(final PsiDirectory exportDir, final File exportBaseDir, final String path)
             throws IntelliVaultException {
-        final File copyRootDir = new File(exportBaseDir.getAbsolutePath() + File.separator
-                + IntelliVaultConstants.JCR_ROOT
-                + path.replace(IntelliVaultConstants.JCR_PATH_SEPERATOR, File.separator));
+        final File copyRootDir = new File(
+                exportBaseDir.getAbsolutePath() + File.separator + IntelliVaultConstants.JCR_ROOT + path
+                        .replace(IntelliVaultConstants.JCR_PATH_SEPERATOR, File.separator));
         if (!copyRootDir.exists()) {
             throw new IntelliVaultException("Failed copying contents.");
         }
@@ -140,6 +137,7 @@ public class FileUtils {
 
     /**
      * Delete a directory and all of it's contents in a depth-first recursive manner.
+     *
      * @param f the directory to delete
      * @throws IOException if an error occurs
      */
@@ -159,12 +157,13 @@ public class FileUtils {
      * Delete a file.  This method will retry the delete up to 5 times, sleeping for one second between retries.
      * This is because sometimes, especially with smaller imports, the cleanup starts happening before vault has closed
      * all of it's file locks.  The retry behavior makes a best effort to properly cleanup when that happens.
+     *
      * @param f the file to delete
      * @throws IOException if the file can't be deleted.
      */
     private static void delete(File f) throws IOException {
         boolean isDeleted = f.delete();
-        for(int i=0;i<4 && !isDeleted;i++){
+        for (int i = 0; i < 4 && !isDeleted; i++) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -173,7 +172,7 @@ public class FileUtils {
             isDeleted = f.delete();
         }
 
-        if(!isDeleted) {
+        if (!isDeleted) {
             throw new IOException("Failed to delete file: " + f);
         }
     }
@@ -188,6 +187,7 @@ public class FileUtils {
 
                 if (subdir == null) {
                     subdir = ApplicationManager.getApplication().runWriteAction(new Computable<PsiDirectory>() {
+
                         @Override
                         public PsiDirectory compute() {
                             return exportDir.createSubdirectory(f.getName());
@@ -201,7 +201,8 @@ public class FileUtils {
         }
     }
 
-    private static void copyFile(final PsiDirectory exportDir, final File f, FileComparator comparator) throws IOException {
+    private static void copyFile(final PsiDirectory exportDir, final File f, FileComparator comparator)
+            throws IOException {
         if (f.getName().equals(".vlt")) {
             return;
         }
@@ -210,6 +211,7 @@ public class FileUtils {
 
         if (file == null) {
             file = ApplicationManager.getApplication().runWriteAction(new Computable<PsiFile>() {
+
                 @Override
                 public PsiFile compute() {
                     return exportDir.createFile(f.getName());
@@ -217,7 +219,7 @@ public class FileUtils {
             });
         }
 
-        if(!comparator.areEqual(f,file.getVirtualFile())) {
+        if (!comparator.areEqual(f, file.getVirtualFile())) {
             copyFileContents(file, f);
         }
 
@@ -227,6 +229,7 @@ public class FileUtils {
         final VirtualFile vf = file.getVirtualFile();
 
         ApplicationManager.getApplication().runWriteAction(new ThrowableComputable<Void, IOException>() {
+
             @Override
             public Void compute() throws IOException {
                 OutputStream out = null;
