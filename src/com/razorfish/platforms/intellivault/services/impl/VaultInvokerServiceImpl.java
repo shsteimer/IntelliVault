@@ -16,8 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The Vault Invoker Service which handles actually calling vault to do import/export operations and dealng with the
- * classloaders to do so.
+ * The Vault Invoker Service which handles actually calling vault to do import/export operations and dealing with the
+ * class loaders to do so.
  */
 public class VaultInvokerServiceImpl implements VaultInvokerService {
     private static final String VAULT_CLASS = "com.day.jcr.vault.cli.VaultFsApp";
@@ -75,9 +75,9 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
      * Initialize vault.  Basically finds all the jars in the vault folder and creates a custom class loader which
      * includes those jars.  All vault operations are then executed using that class loader.
      *
-     * @param vaultDir the vault home directory as specified in the settings diaog. Could be the root directory, or
+     * @param vaultDir the vault home directory as specified in the settings dialog. Could be the root directory, or
      *                 potentially the bin or lib directory.
-     * @throws IOException if an error occurs, sucha s the vault directory not being set.
+     * @throws IOException if an error occurs, such as the vault directory not being set.
      */
     private void initVault(String vaultDir) throws IOException {
         if (!init) {

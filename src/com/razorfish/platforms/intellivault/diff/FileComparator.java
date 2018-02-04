@@ -14,7 +14,7 @@ public class FileComparator {
     protected boolean ignoreWhitespace;
 
     /**
-     * Constructs a new FileComparitor.
+     * Constructs a new FileComparator.
      * 
      * @param ignoreWhitespace
      *            if true ignore files where the only difference is whitepsace,

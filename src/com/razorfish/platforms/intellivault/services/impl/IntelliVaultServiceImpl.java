@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The IntelliVault service handles all of the logic around calling vault such as copying files, settting up vault
+ * The IntelliVault service handles all of the logic around calling vault such as copying files, setting up vault
  * configurations, etc.
  */
 public class IntelliVaultServiceImpl implements IntelliVaultService {

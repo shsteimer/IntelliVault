@@ -1,11 +1,7 @@
 package com.razorfish.platforms.intellivault.config;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sean.steimer
- * Date: 3/15/13
- * Time: 12:46 PM
- * To change this template use File | Settings | File Templates.
+ * Configuration default values used by the app.
  */
 public class IntelliVaultConfigDefaults {
 

@@ -9,11 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sean.steimer
- * Date: 3/25/13
- * Time: 10:58 PM
- * To change this template use File | Settings | File Templates.
+ * Value object for storing all Intellivault user preferences.
  */
 public class IntelliVaultPreferences implements Serializable, Cloneable {
 

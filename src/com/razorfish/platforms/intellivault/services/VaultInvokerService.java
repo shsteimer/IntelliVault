@@ -20,7 +20,7 @@ public interface VaultInvokerService {
 
     /**
      * Force vault to re-initialize before next invocation.  This should be used when a configuration changes which
-     * would affect they way vault is called.
+     * would affect the way vault is called.
      */
     void forceReInit();
 }

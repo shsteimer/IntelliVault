@@ -5,13 +5,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sean.steimer
- * Date: 3/15/13
- * Time: 12:43 PM
- * To change this template use File | Settings | File Templates.
+ * Value object used to store a configured crx repository where vault will import/export.
  */
-public class IntelliVaultCRXRepository implements Serializable,Comparable<IntelliVaultCRXRepository>,Cloneable{
+public class IntelliVaultCRXRepository implements Serializable, Comparable<IntelliVaultCRXRepository>, Cloneable {
 
     private static final long serialVersionUID = 8008135L;
     private String name;
@@ -31,8 +27,8 @@ public class IntelliVaultCRXRepository implements Serializable,Comparable<Intell
 
     /**
      * Create a new instance with the supplied name, url, username, password.
-     * */
-    public IntelliVaultCRXRepository(String name, String repoUrl, String username, String password){
+     */
+    public IntelliVaultCRXRepository(String name, String repoUrl, String username, String password) {
         this.name = name;
         this.repoUrl = repoUrl;
         this.username = username;
@@ -63,10 +59,15 @@ public class IntelliVaultCRXRepository implements Serializable,Comparable<Intell
         this.username = username;
     }
 
-    public String getName(){ return name; }
-    public void setName(String name){ this.name = name; }
+    public String getName() {
+        return name;
+    }
 
-    public void replaceWith(IntelliVaultCRXRepository otherRepoConfig){
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void replaceWith(IntelliVaultCRXRepository otherRepoConfig) {
         this.name = otherRepoConfig.getName();
         this.repoUrl = otherRepoConfig.getRepoUrl();
         this.username = otherRepoConfig.getUsername();
@@ -74,19 +75,21 @@ public class IntelliVaultCRXRepository implements Serializable,Comparable<Intell
     }
 
     @Override
-    public String toString(){
-        return name;
-    }
-
-    @Override
-    public int compareTo(@NotNull IntelliVaultCRXRepository o) {
+    public int compareTo(
+            @NotNull
+                    IntelliVaultCRXRepository o) {
         return getName().compareTo(o.getName());
     }
 
     @Override
-    public Object clone(){
+    public Object clone() {
         IntelliVaultCRXRepository newRepo = new IntelliVaultCRXRepository();
         newRepo.replaceWith(this);
         return newRepo;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

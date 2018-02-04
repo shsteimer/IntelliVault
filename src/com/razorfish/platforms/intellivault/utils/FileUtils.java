@@ -13,7 +13,7 @@ import com.razorfish.platforms.intellivault.filter.Filter;
 import java.io.*;
 
 /**
- * FileUtiles is a set of static utility methods for itneracting with files.
+ * FileUtils is a set of static utility methods for interacting with files.
  * Both files on the file system before/after a vault import/export operation,
  * and virtual files within the intelliJ IDEA Project file system.
  */
