@@ -3,7 +3,6 @@ package com.razorfish.platforms.intellivault.services.impl;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -18,7 +17,15 @@ import com.razorfish.platforms.intellivault.services.VaultInvokerService;
 import com.razorfish.platforms.intellivault.utils.FileUtils;
 import com.razorfish.platforms.intellivault.utils.IntelliVaultConstants;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,20 +36,19 @@ import java.util.List;
 public class IntelliVaultServiceImpl implements IntelliVaultService {
 
     public static final String CHECKOUT = "co";
-    private static final String IMPORT = "import";
-    private static final String EXPORT = "export";
     public static final String DEBUG = "debug";
-
     public static final String FILTER = "--filter";
     public static final String CREDENTIALS = "--credentials";
     public static final String VERBOSE = "--verbose";
     public static final String FORCE = "--force";
     public static final String LOG_LEVEL = "--log-level";
-
     public static final String WORKSPACE_ROOT_PATH = "/crx/server";
     public static final String CREDENTIALS_SEPERATOR = ":";
     public static final String NEW_LINE_CHAR = "\n";
+    private static final String IMPORT = "import";
+    private static final String EXPORT = "export";
     private static final List<String> TOP_LEVEL_JCR_PATHS = new ArrayList<String>() {
+
         {
             add("/");
             add("/apps");
@@ -55,24 +61,22 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
             add("/content");
         }
     };
-
+    private static final Logger log = Logger.getInstance(IntelliVaultServiceImpl.class);
     // private PrintStream sysOut;
     private OutputStream logOut;
     // private File logFile;
     private boolean isError;
     private String errorMsg;
 
-    private static final Logger log = Logger.getInstance(IntelliVaultServiceImpl.class);
-
     @Override
     public void vaultExport(final IntelliVaultCRXRepository repository, final IntelliVaultOperationConfig opConf,
-                            final VaultOperationDirectory exportOpDir, final ProgressIndicator progressIndicator, ConsoleView console)
+            final VaultOperationDirectory exportOpDir, final ProgressIndicator progressIndicator, ConsoleView console)
             throws IntelliVaultException {
         progressIndicator.setText2("Preparing export");
 
         if (TOP_LEVEL_JCR_PATHS.contains(exportOpDir.getJcrPath())) {
-            throw new IntelliVaultException("Cannot export top level directory " + exportOpDir.getJcrPath() +
-                    ".  Please select a valid sub-path.");
+            throw new IntelliVaultException("Cannot export top level directory " + exportOpDir.getJcrPath()
+                    + ".  Please select a valid sub-path.");
         }
 
         isError = false;
@@ -94,18 +98,15 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
 
             progressIndicator.setText2("Copying export contents to IDEA");
 
-            ApplicationManager.getApplication().invokeAndWait(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        FileUtils.copyExportContents(exportOpDir.getPsiDir(), exportBaseDir, exportOpDir.getJcrPath());
-                    } catch (IntelliVaultException e) {
-                        // TODO work on this
-                        log.error("Error copying contents.", e);
-                        Messages.showErrorDialog(e.getLocalizedMessage(), "IntelliVault Error!");
-                    }
+            ApplicationManager.getApplication().invokeAndWait(() -> {
+                try {
+                    FileUtils.copyExportContents(exportOpDir.getPsiDir(), exportBaseDir, exportOpDir.getJcrPath());
+                } catch (IntelliVaultException e) {
+                    // TODO work on this
+                    log.error("Error copying contents.", e);
+                    Messages.showErrorDialog(e.getLocalizedMessage(), "IntelliVault Error!");
                 }
-            }, ModalityState.NON_MODAL);
+            });
 
         } finally {
             if (!opConf.isDebug()) {
@@ -121,13 +122,13 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
 
     @Override
     public void vaultImport(final IntelliVaultCRXRepository repository, final IntelliVaultOperationConfig opConf,
-                            final VaultOperationDirectory importOpDir, ProgressIndicator progressIndicator, ConsoleView console)
+            final VaultOperationDirectory importOpDir, ProgressIndicator progressIndicator, ConsoleView console)
             throws IntelliVaultException {
         progressIndicator.setText2("Preparing import");
 
         if (TOP_LEVEL_JCR_PATHS.contains(importOpDir.getJcrPath())) {
-            throw new IntelliVaultException("Cannot import top level directory " + importOpDir.getJcrPath() +
-                    ".  Please select a valid sub-path.");
+            throw new IntelliVaultException("Cannot import top level directory " + importOpDir.getJcrPath()
+                    + ".  Please select a valid sub-path.");
         }
 
         isError = false;
@@ -136,15 +137,15 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
         final File importBaseDir = FileUtils.createTempDirectory(opConf.getTempDirectory());
 
         try {
-            final List<String> jcrPaths = new ArrayList<String>();
+            final List<String> jcrPaths = new ArrayList<>();
             jcrPaths.add(importOpDir.getJcrPath());
             File filterFile = createFilterFile(importBaseDir, jcrPaths);
 
             try {
-                FileUtils.writeFile("com/razorfish/platforms/intellivault/settings.xml", filterFile.getParentFile()
-                        .getAbsoluteFile() + File.separator + "settings.xml");
-                FileUtils.writeFile("com/razorfish/platforms/intellivault/config.xml", filterFile.getParentFile()
-                        .getAbsoluteFile() + File.separator + "config.xml");
+                FileUtils.writeFile("com/razorfish/platforms/intellivault/settings.xml",
+                        filterFile.getParentFile().getAbsoluteFile() + File.separator + "settings.xml");
+                FileUtils.writeFile("com/razorfish/platforms/intellivault/config.xml",
+                        filterFile.getParentFile().getAbsoluteFile() + File.separator + "config.xml");
             } catch (IOException e) {
                 throw new IntelliVaultException("Error creating import config files.", e);
             }
@@ -327,13 +328,14 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
         System.setOut(new PrintStream(logOut));
 
         final Thread writerThread = new Thread() {
+
             public void run() {
                 log.debug("Starting input listener");
                 try {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
                     for (String line = reader.readLine(); line != null; line = reader.readLine()) {
-                        if (line.contains("[ERROR]") ||
-                                (isError && (line.contains("caused by") || line.contains("at")))) {
+                        if (line.contains("[ERROR]") || (isError && (line.contains("caused by") || line
+                                .contains("at")))) {
                             isError = true;
                             errorMsg += NEW_LINE_CHAR + line;
 
