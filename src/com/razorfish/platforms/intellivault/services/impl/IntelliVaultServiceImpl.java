@@ -47,20 +47,7 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
     public static final String NEW_LINE_CHAR = "\n";
     private static final String IMPORT = "import";
     private static final String EXPORT = "export";
-    private static final List<String> TOP_LEVEL_JCR_PATHS = new ArrayList<String>() {
 
-        {
-            add("/");
-            add("/apps");
-            add("/libs");
-            add("/etc");
-            add("/home");
-            add("/var");
-            add("/bin");
-            add("/tmp");
-            add("/content");
-        }
-    };
     private static final Logger log = Logger.getInstance(IntelliVaultServiceImpl.class);
     // private PrintStream sysOut;
     private OutputStream logOut;
@@ -73,11 +60,6 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
             final VaultOperationDirectory exportOpDir, final ProgressIndicator progressIndicator, ConsoleView console)
             throws IntelliVaultException {
         progressIndicator.setText2("Preparing export");
-
-        if (TOP_LEVEL_JCR_PATHS.contains(exportOpDir.getJcrPath())) {
-            throw new IntelliVaultException("Cannot export top level directory " + exportOpDir.getJcrPath()
-                    + ".  Please select a valid sub-path.");
-        }
 
         isError = false;
         errorMsg = null;
@@ -125,11 +107,6 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
             final VaultOperationDirectory importOpDir, ProgressIndicator progressIndicator, ConsoleView console)
             throws IntelliVaultException {
         progressIndicator.setText2("Preparing import");
-
-        if (TOP_LEVEL_JCR_PATHS.contains(importOpDir.getJcrPath())) {
-            throw new IntelliVaultException("Cannot import top level directory " + importOpDir.getJcrPath()
-                    + ".  Please select a valid sub-path.");
-        }
 
         isError = false;
         errorMsg = null;

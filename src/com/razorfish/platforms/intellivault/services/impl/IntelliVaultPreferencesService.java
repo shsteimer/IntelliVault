@@ -20,7 +20,7 @@ public class IntelliVaultPreferencesService implements PersistentStateComponent<
             preferences = new IntelliVaultPreferences();
         }
 
-        if (preferences.repoConfigList != null && preferences.repoConfigList.size() == 0) {
+        if (preferences.repoConfigList == null || preferences.repoConfigList.size() == 0) {
             preferences.repoConfigList = preferences.getDefaultRepos();
         }
 
