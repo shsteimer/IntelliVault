@@ -2,9 +2,7 @@
     <id>com.crownpartners.intellivault</id>
     <name>IntelliVault</name>
     <version>0.10.0</version>
-    <vendor email="sean.steimer@razorfish.com"
-            url="http://technologyplatforms.razorfish.com/">Razorfish Platforms
-    </vendor>
+    <vendor url="https://github.com/shsteimer/IntelliVault">Sean Steimer</vendor>
 
     <description><![CDATA[
       <p>A plugin for IntelliJ IDEA to interact with a CRX repository via the FileVault tool which is

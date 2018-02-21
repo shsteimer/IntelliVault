@@ -7,7 +7,6 @@ import com.razorfish.platforms.intellivault.services.VaultInvokerService;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -20,17 +19,16 @@ import java.util.List;
  * class loaders to do so.
  */
 public class VaultInvokerServiceImpl implements VaultInvokerService {
+
+    public static final String LIB = "lib";
+    public static final String BIN = "bin";
     private static final String VAULT_CLASS = "com.day.jcr.vault.cli.VaultFsApp";
     private static final String VAULT3_CLASS = "org.apache.jackrabbit.vault.cli.VaultFsApp";
     private static final String VAULT_METHOD = "main";
-    public static final String LIB = "lib";
-    public static final String BIN = "bin";
-
+    private static final Logger log = Logger.getInstance(VaultInvokerServiceImpl.class);
     private ClassLoader vaultClassLoader;
     private boolean init = false;
     private boolean isVault3 = false;
-
-    private static final Logger log = Logger.getInstance(VaultInvokerServiceImpl.class);
 
     @Override
     public void invokeVault(String vaultDir, String[] args) throws IntelliVaultException {
@@ -47,23 +45,14 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
                 String vltCLs = isVault3 ? VAULT3_CLASS : VAULT_CLASS;
                 Class<?> vltClass = Class.forName(vltCLs, true, vaultClassLoader);
                 Method vltMethod = vltClass.getMethod(VAULT_METHOD, String[].class);
-                vltMethod.invoke(null, new Object[] {args});
+                vltMethod.invoke(null, new Object[] { args });
             } finally {
                 Thread.currentThread().setContextClassLoader(cl);
             }
 
-        } catch (ClassNotFoundException e) {
-            throw new IntelliVaultException(e);
-        } catch (NoSuchMethodException e) {
-            throw new IntelliVaultException(e);
-        } catch (InvocationTargetException e) {
-            throw new IntelliVaultException(e);
-        } catch (IOException e) {
-            throw new IntelliVaultException(e);
-        } catch (IllegalAccessException e) {
+        } catch (Exception e) {
             throw new IntelliVaultException(e);
         }
-
     }
 
     @Override
@@ -96,6 +85,7 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
             List<URL> libList = new ArrayList<URL>();
             File libDir = new File(vaultDir.replace('/', File.separatorChar));
             File[] libs = libDir.listFiles(new FilenameFilter() {
+
                 public boolean accept(File dir, String name) {
                     return (name.endsWith(".jar")) || (name.endsWith(".zip"));
                 }
