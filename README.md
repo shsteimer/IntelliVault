@@ -27,9 +27,8 @@ Locate `filevault.zip` or `filevault.tgz` inside of your AEM directory at `crx-q
 Once you have unpacked **Filevault**, open the plugin configuration dialog accessible via **Preferences** > **Tools** > **IntelliVault** and set the following properties.
 
 - **Vault Directory**: Set this to the directory where you unpacked Filevault, ie. `/Users/myuser/dev/tools/vault/vault-cli-3.1.38/bin`
-- **Verbose Output**: If checked, passes the `Verbose` flag to filevault
-- **Show Dialogs**: If checked, IntelliVault will prompt you to comfirm each operation.  Uncheck this to remove those confirmations
 - **Repository**: See `Multi-Repository Configuration` below
+- **Show Operation Confirmation Dialogs**: If checked, IntelliVault will prompt you to comfirm each operation.  Uncheck this to remove those confirmations
 - Other properties are optional and shouldn't require changes, but should be self-explanatory if/when changes are required
 
 ### Multi-Repository Configuration
@@ -39,7 +38,5 @@ IntelliVault now allows you to configure and manage multiple repository configur
 - **Repository Name**: Friendly name for this repo.
 - **CRX Repository URL**: URL for the repo, i.e. http://localhost:4502
 - **Username/Password**: Credentials used for transferring, ie. admin/admin
-
-**Note: that you must save any changes to a repository configuration before exiting the dialog.  Unfortunately, these are not yet auto-saved when saving other setting.**
 
 If more than one repo is configured, you will be prompted to select a repo for each operation.  If only one repo exists, that repo will be used without any prompt.

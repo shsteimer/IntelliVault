@@ -68,4 +68,9 @@
                                  instance="com.razorfish.platforms.intellivault.ui.IntelliVaultSettings"/>
     </extensions>
 
+    <application-components>
+        <component>
+            <implementation-class>com.razorfish.platforms.intellivault.ui.IntelliVaultSettings</implementation-class>
+        </component>
+    </application-components>
 </idea-plugin>

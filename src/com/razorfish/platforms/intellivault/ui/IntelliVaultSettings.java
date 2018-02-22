@@ -109,12 +109,6 @@ public class IntelliVaultSettings implements Configurable {
             }
         });
 
-        btnRestoreDefaults.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setDialogStateFromPreferences(new IntelliVaultPreferences());
-            }
-        });
         btnDeleteRepository.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -156,6 +150,8 @@ public class IntelliVaultSettings implements Configurable {
      * Saves the {@link IntelliVaultPreferences} back to the {@link IntelliVaultPreferencesService}
      */
     private void save() {
+        saveCurrentRepository();
+
         IntelliVaultPreferencesService preferencesService = ServiceManager.getService(IntelliVaultPreferencesService.class);
         injectPreferencesFromDialogState(userPreferences);
         preferencesService.setPreferences(userPreferences);
