@@ -7,6 +7,5 @@
 
 # intelliJ Files
 .idea/*
-out/production/Intellivault/com/razorfish/platforms/intellivault/config.xml
-out/production/Intellivault/com/razorfish/platforms/intellivault/settings.xml
-out/production/Intellivault/META-INF/plugin.xml
+!.idea/IntelliVault.iml
+out/

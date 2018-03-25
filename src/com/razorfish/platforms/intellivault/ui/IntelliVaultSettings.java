@@ -51,6 +51,7 @@ public class IntelliVaultSettings implements Configurable {
     private JTextField txtRepoName;
 
     private IntelliVaultPreferences userPreferences;
+    private String lastLoadedRepo = null;
 
     @Nls
     @Override
@@ -108,12 +109,6 @@ public class IntelliVaultSettings implements Configurable {
             }
         });
 
-        btnRestoreDefaults.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setDialogStateFromPreferences(new IntelliVaultPreferences());
-            }
-        });
         btnDeleteRepository.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -155,6 +150,8 @@ public class IntelliVaultSettings implements Configurable {
      * Saves the {@link IntelliVaultPreferences} back to the {@link IntelliVaultPreferencesService}
      */
     private void save() {
+        saveCurrentRepository();
+
         IntelliVaultPreferencesService preferencesService = ServiceManager.getService(IntelliVaultPreferencesService.class);
         injectPreferencesFromDialogState(userPreferences);
         preferencesService.setPreferences(userPreferences);
@@ -239,8 +236,6 @@ public class IntelliVaultSettings implements Configurable {
         rebuildRepositoryComboBox(newRepo);
     }
 
-    private String lastLoadedRepo = null;
-
     /**
      * Sets the dialog state to reflect the newly selected {@link IntelliVaultCRXRepository}
      * If the user chooses the "Create New Repository..." option a new repository will be added to the {@link IntelliVaultPreferences} state.
@@ -314,7 +309,7 @@ public class IntelliVaultSettings implements Configurable {
     private void rebuildRepositoryComboBox(IntelliVaultCRXRepository selectedItem) {
         comboProfileSelect.removeAllItems();
         comboProfileSelect.addItem("Create New Repository...");
-        List<IntelliVaultCRXRepository> rValues = userPreferences.getRepoConfigs();
+        List<IntelliVaultCRXRepository> rValues = userPreferences.getRepoConfigList();
         for (IntelliVaultCRXRepository repo : rValues) {
             comboProfileSelect.addItem(repo);
         }

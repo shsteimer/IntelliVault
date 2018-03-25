@@ -1,5 +1,4 @@
-IntelliVault
-============
+# IntelliVault
 
 A plugin for IntelliJ IDEA to interact with JCR repositories via the FileVault tool which is packaged with Adobe Experience Manager.
 
@@ -7,35 +6,37 @@ This plugin is largely based upon, and liberally borrows from, [VaultClipse](htt
 
 The plugin can be found in the [JetBrains IDEA Plugin Repository](http://plugins.jetbrains.com/plugin/7328)
 
-Supported product versions
----------------------------
+## Supported product versions
+
 The *IntelliVault* plugin is currently supported on the following Intellij products:
 
-* Intellij IDEA 14 Community/Ultimate
+* Intellij IDEA 2016.1 Community/Ultimate
 
-Installation
--------------
+## Installation
+
 To install the plugin using the Intellij built-in plugin management dialog, go to **Preferences** > **Plugins** > **Browse Repositories**, type *Intellivault* and click the **Install** button.
 
-NOTE: If after installing the plugin and restarting the IDE you don't see the **IntelliVault** option under **Other Settings** then your version is most likely not supported.
+NOTE: If after installing the plugin and restarting the IDE you don't see the **IntelliVault** option under **Tools** then your version is most likely not supported.
 
-Configuration
--------------
-The plugin is using the [Vault](http://docs.adobe.com/docs/en/crx/2-3/how_to/how_to_use_the_vlttool.html) package that is supplied with Adobe CQ5/AEM6. 
+## Configuration
 
-The archived package for Vault command line tools is located under your CQ/AEM server folder in `crx-quickstart/opt/filevault/filevault.zip`. 
+IntelliVault uses the [Filevault](https://helpx.adobe.com/experience-manager/6-3/sites/developing/using/ht-vlttool.html) tool under the covers to transfer content between IDEA and your AEM repository.  This is a hard dependency, and requires unpacking Filevault before you can configure the plugin.
 
-Unpack the file `filevault.zip` to any folder on your file system, and then in the **Intellivault** configuration dialog enter the path to the unpacked *Filevault* folder, i.e. `/Users/ccpizz/bin/vault-cli-3.1.6`.
+Locate `filevault.zip` or `filevault.tgz` inside of your AEM directory at `crx-quickstart/opt/filevault` and unpack that to any directory.
 
-Once you have unpacked the **filevault** files, open the plugin configuration dialog accessible via **Preferences** > **Other Settings** > **IntelliVault**.
+Once you have unpacked **Filevault**, open the plugin configuration dialog accessible via **Preferences** > **Tools** > **IntelliVault** and set the following properties.
 
-In the dialog specify the repository:
+- **Vault Directory**: Set this to the directory where you unpacked Filevault, ie. `/Users/myuser/dev/tools/vault/vault-cli-3.1.38/bin`
+- **Repository**: See `Multi-Repository Configuration` below
+- **Show Operation Confirmation Dialogs**: If checked, IntelliVault will prompt you to comfirm each operation.  Uncheck this to remove those confirmations
+- Other properties are optional and shouldn't require changes, but should be self-explanatory if/when changes are required
 
-**CRX Repository URL**: i.e. http://localhost:4502
+### Multi-Repository Configuration
 
-**Username**: admin
+IntelliVault now allows you to configure and manage multiple repository configurations. For each repo, you must set the following:
 
-**Password**: admin
+- **Repository Name**: Friendly name for this repo.
+- **CRX Repository URL**: URL for the repo, i.e. http://localhost:4502
+- **Username/Password**: Credentials used for transferring, ie. admin/admin
 
-Optionally untick the *Show Dialogs* checkbox if you don't want the confirmation dialog to pop up every time you sync.
-
+If more than one repo is configured, you will be prompted to select a repo for each operation.  If only one repo exists, that repo will be used without any prompt.

@@ -1,11 +1,7 @@
 package com.razorfish.platforms.intellivault.config;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sean.steimer
- * Date: 3/15/13
- * Time: 12:46 PM
- * To change this template use File | Settings | File Templates.
+ * Configuration default values used by the app.
  */
 public class IntelliVaultConfigDefaults {
 
@@ -18,7 +14,11 @@ public class IntelliVaultConfigDefaults {
     }
 
     public static final String REPO_NAME = "new repository";
+    public static final String REPO_NAME_AUTHOR = "author";
+    public static final String REPO_NAME_PUBLISH = "publish";
+
     public static final String REPO_URL = "http://localhost:4502";
+    public static final String REPO_URL_PUBLISH = "http://localhost:4502";
     public static final String REPO_USER = "admin";
     public static final String REPO_PASSWORD = "admin";
 

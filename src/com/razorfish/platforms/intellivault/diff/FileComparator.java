@@ -2,23 +2,25 @@ package com.razorfish.platforms.intellivault.diff;
 
 import com.intellij.openapi.vfs.VirtualFile;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Compares files to determine if the files are actually different or if the
  * differences are due to whitespace only.
- * 
  */
 public class FileComparator {
 
     protected boolean ignoreWhitespace;
 
     /**
-     * Constructs a new FileComparitor.
-     * 
-     * @param ignoreWhitespace
-     *            if true ignore files where the only difference is whitepsace,
-     *            if false do a binary check
+     * Constructs a new FileComparator.
+     *
+     * @param ignoreWhitespace if true ignore files where the only difference is whitepsace,
+     *                         if false do a binary check
      */
     public FileComparator(boolean ignoreWhitespace) {
         this.ignoreWhitespace = ignoreWhitespace;
@@ -27,11 +29,9 @@ public class FileComparator {
     /**
      * Checks to see if the files are equal. If set to ignore whitespace, files
      * with only whitespace differences are considered equal.
-     * 
-     * @param f1
-     *            the first file to compare
-     * @param f2
-     *            the second file to compare
+     *
+     * @param f1 the first file to compare
+     * @param f2 the second file to compare
      * @return true if the files are equal, false otherwise
      * @throws IOException
      */
