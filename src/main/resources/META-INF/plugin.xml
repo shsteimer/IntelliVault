@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.crownpartners.intellivault</id>
     <name>IntelliVault</name>
-    <version>0.10.0</version>
+    <version>0.11.0-SNAPSHOT</version>
     <vendor url="https://github.com/shsteimer/IntelliVault">Sean Steimer</vendor>
 
     <description><![CDATA[
