@@ -22,13 +22,11 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
 
     public static final String LIB = "lib";
     public static final String BIN = "bin";
-    private static final String VAULT_CLASS = "com.day.jcr.vault.cli.VaultFsApp";
     private static final String VAULT3_CLASS = "org.apache.jackrabbit.vault.cli.VaultFsApp";
     private static final String VAULT_METHOD = "main";
     private static final Logger log = Logger.getInstance(VaultInvokerServiceImpl.class);
     private ClassLoader vaultClassLoader;
     private boolean init = false;
-    private boolean isVault3 = false;
 
     @Override
     public void invokeVault(String vaultDir, String[] args) throws IntelliVaultException {
@@ -41,9 +39,7 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
 
             try {
                 Thread.currentThread().setContextClassLoader(vaultClassLoader);
-                //figure out which vlt class to use based on version
-                String vltCLs = isVault3 ? VAULT3_CLASS : VAULT_CLASS;
-                Class<?> vltClass = Class.forName(vltCLs, true, vaultClassLoader);
+                Class<?> vltClass = Class.forName(VAULT3_CLASS, true, vaultClassLoader);
                 Method vltMethod = vltClass.getMethod(VAULT_METHOD, String[].class);
                 vltMethod.invoke(null, new Object[] { args });
             } finally {
@@ -94,10 +90,9 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
                 for (File lib : libs) {
                     try {
                         libList.add(lib.toURI().toURL());
-                        String libName = lib.getName();
-                        if (libName.contains("vault-vlt-3")) {
-                            isVault3 = true;
-                        }
+
+                        //TODO add a check here on the vlt version, if less than 3.2, signal error of some sort
+
                     } catch (IOException e) {
                         log.error("error loading lib " + lib.getAbsolutePath(), e);
                     }
