@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
  * The preferences services handles storing and retrieving the configuration state of the vault plugin.
  */
 @State(name = "IntelliVaultPreferencesService", storages = {
-        @Storage(id = "main", file = "$APP_CONFIG$/IntelliVaultPreferencesService.xml") })
+        @Storage("IntelliVaultPreferencesService.xml") })
 public class IntelliVaultPreferencesService implements PersistentStateComponent<IntelliVaultPreferences> {
 
     private IntelliVaultPreferences preferences;
