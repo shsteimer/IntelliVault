@@ -105,7 +105,7 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
                             int minorVersion = Integer.parseInt(minorVersionStr);
 
                             if(majorVersion<3 || minorVersion<2) {
-                                throw new IntelliVaultException("IntelliVault only supports VLT version 3.2+. Please select a supported version in Preference->Tools->IntelliVault");
+                                throw new IntelliVaultException("IntelliVault only supports VLT version 3.2+. Please select a supported version in IntelliJ IDEA->Preferences...->Tools->IntelliVault");
                             }
 
                         }
