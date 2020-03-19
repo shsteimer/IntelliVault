@@ -7,12 +7,15 @@ import com.razorfish.platforms.intellivault.services.VaultInvokerService;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The Vault Invoker Service which handles actually calling vault to do import/export operations and dealing with the
@@ -64,7 +67,7 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
      *                 potentially the bin or lib directory.
      * @throws IOException if an error occurs, such as the vault directory not being set.
      */
-    private void initVault(String vaultDir) throws IOException {
+    private void initVault(String vaultDir) throws IOException, IntelliVaultException {
         if (!init) {
             if (vaultDir == null || vaultDir.trim().length() == 0) {
                 throw new IOException("Vault Directory not set");
@@ -91,7 +94,21 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
                     try {
                         libList.add(lib.toURI().toURL());
 
-                        //TODO add a check here on the vlt version, if less than 3.2, signal error of some sort
+                        String libName = lib.getName();
+                        Pattern pattern = Pattern.compile("vault-vlt-([0-9]{1,6})\\.([0-9]{1,6})\\.([0-9]{1,6})\\.jar");
+                        Matcher matcher = pattern.matcher(libName);
+                        if(matcher.matches()) {
+                            String majorVersionStr = matcher.group(1);
+                            int majorVersion = Integer.parseInt(majorVersionStr);
+
+                            String minorVersionStr = matcher.group(2);
+                            int minorVersion = Integer.parseInt(minorVersionStr);
+
+                            if(majorVersion<3 || minorVersion<2) {
+                                throw new IntelliVaultException("IntelliVault only supports VLT version 3.2+. Please select a supported version in Preference->Tools->IntelliVault");
+                            }
+
+                        }
 
                     } catch (IOException e) {
                         log.error("error loading lib " + lib.getAbsolutePath(), e);
