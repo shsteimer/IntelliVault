@@ -7,12 +7,15 @@ import com.razorfish.platforms.intellivault.services.VaultInvokerService;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The Vault Invoker Service which handles actually calling vault to do import/export operations and dealing with the
@@ -22,13 +25,11 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
 
     public static final String LIB = "lib";
     public static final String BIN = "bin";
-    private static final String VAULT_CLASS = "com.day.jcr.vault.cli.VaultFsApp";
     private static final String VAULT3_CLASS = "org.apache.jackrabbit.vault.cli.VaultFsApp";
     private static final String VAULT_METHOD = "main";
     private static final Logger log = Logger.getInstance(VaultInvokerServiceImpl.class);
     private ClassLoader vaultClassLoader;
     private boolean init = false;
-    private boolean isVault3 = false;
 
     @Override
     public void invokeVault(String vaultDir, String[] args) throws IntelliVaultException {
@@ -41,9 +42,7 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
 
             try {
                 Thread.currentThread().setContextClassLoader(vaultClassLoader);
-                //figure out which vlt class to use based on version
-                String vltCLs = isVault3 ? VAULT3_CLASS : VAULT_CLASS;
-                Class<?> vltClass = Class.forName(vltCLs, true, vaultClassLoader);
+                Class<?> vltClass = Class.forName(VAULT3_CLASS, true, vaultClassLoader);
                 Method vltMethod = vltClass.getMethod(VAULT_METHOD, String[].class);
                 vltMethod.invoke(null, new Object[] { args });
             } finally {
@@ -68,7 +67,7 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
      *                 potentially the bin or lib directory.
      * @throws IOException if an error occurs, such as the vault directory not being set.
      */
-    private void initVault(String vaultDir) throws IOException {
+    private void initVault(String vaultDir) throws IOException, IntelliVaultException {
         if (!init) {
             if (vaultDir == null || vaultDir.trim().length() == 0) {
                 throw new IOException("Vault Directory not set");
@@ -94,10 +93,23 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
                 for (File lib : libs) {
                     try {
                         libList.add(lib.toURI().toURL());
+
                         String libName = lib.getName();
-                        if (libName.contains("vault-vlt-3")) {
-                            isVault3 = true;
+                        Pattern pattern = Pattern.compile("vault-vlt-([0-9]{1,6})\\.([0-9]{1,6})\\.([0-9]{1,6})\\.jar");
+                        Matcher matcher = pattern.matcher(libName);
+                        if(matcher.matches()) {
+                            String majorVersionStr = matcher.group(1);
+                            int majorVersion = Integer.parseInt(majorVersionStr);
+
+                            String minorVersionStr = matcher.group(2);
+                            int minorVersion = Integer.parseInt(minorVersionStr);
+
+                            if(majorVersion<3 || minorVersion<2) {
+                                throw new IntelliVaultException("IntelliVault only supports VLT version 3.2+. Please select a supported version in IntelliJ IDEA->Preferences...->Tools->IntelliVault");
+                            }
+
                         }
+
                     } catch (IOException e) {
                         log.error("error loading lib " + lib.getAbsolutePath(), e);
                     }
