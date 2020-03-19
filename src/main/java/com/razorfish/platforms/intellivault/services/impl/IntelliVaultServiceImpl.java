@@ -1,5 +1,6 @@
 package com.razorfish.platforms.intellivault.services.impl;
 
+import com.intellij.credentialStore.Credentials;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.application.ApplicationManager;
@@ -17,15 +18,8 @@ import com.razorfish.platforms.intellivault.services.VaultInvokerService;
 import com.razorfish.platforms.intellivault.utils.FileUtils;
 import com.razorfish.platforms.intellivault.utils.IntelliVaultConstants;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.io.PrintStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +51,7 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
 
     @Override
     public void vaultExport(final IntelliVaultCRXRepository repository, final IntelliVaultOperationConfig opConf,
-            final VaultOperationDirectory exportOpDir, final ProgressIndicator progressIndicator, ConsoleView console)
+                            final VaultOperationDirectory exportOpDir, final ProgressIndicator progressIndicator, ConsoleView console)
             throws IntelliVaultException {
         progressIndicator.setText2("Preparing export");
 
@@ -104,7 +98,7 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
 
     @Override
     public void vaultImport(final IntelliVaultCRXRepository repository, final IntelliVaultOperationConfig opConf,
-            final VaultOperationDirectory importOpDir, ProgressIndicator progressIndicator, ConsoleView console)
+                            final VaultOperationDirectory importOpDir, ProgressIndicator progressIndicator, ConsoleView console)
             throws IntelliVaultException {
         progressIndicator.setText2("Preparing import");
 
@@ -175,7 +169,7 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
     }
 
     private String[] prepareImportArgsList(final IntelliVaultCRXRepository repository,
-            final IntelliVaultOperationConfig opConf, final File importBaseDir) {
+                                           final IntelliVaultOperationConfig opConf, final File importBaseDir) {
         List<String> argsList = new ArrayList<String>();
 
         if (opConf.isDebug()) {
@@ -192,7 +186,11 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
         argsList.add(IntelliVaultConstants.JCR_PATH_SEPERATOR);
 
         argsList.add(CREDENTIALS);
-        argsList.add(repository.getUsername() + CREDENTIALS_SEPERATOR + repository.getPassword());
+
+        IntelliVaultPreferencesService preferencesService = ServiceManager.getService(IntelliVaultPreferencesService.class);
+        Credentials credentials = preferencesService.retrieveCredentials(repository.getName());
+
+        argsList.add(credentials.getUserName() + CREDENTIALS_SEPERATOR + credentials.getPasswordAsString());
 
         if (opConf.isVerbose()) {
             argsList.add(VERBOSE);
@@ -202,7 +200,7 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
     }
 
     private String[] prepareExportArgsList(final IntelliVaultCRXRepository repository,
-            final IntelliVaultOperationConfig opConf, final File exportBaseDir, final File filterFile) {
+                                           final IntelliVaultOperationConfig opConf, final File exportBaseDir, final File filterFile) {
         List<String> argsList = new ArrayList<String>();
 
         if (opConf.isDebug()) {
@@ -220,7 +218,11 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
         argsList.add(exportBaseDir.getAbsolutePath());
 
         argsList.add(CREDENTIALS);
-        argsList.add(repository.getUsername() + CREDENTIALS_SEPERATOR + repository.getPassword());
+
+        IntelliVaultPreferencesService preferencesService = ServiceManager.getService(IntelliVaultPreferencesService.class);
+        Credentials credentials = preferencesService.retrieveCredentials(repository.getName());
+
+        argsList.add(credentials.getUserName() + CREDENTIALS_SEPERATOR + credentials.getPasswordAsString());
 
         if (opConf.isVerbose()) {
             argsList.add(VERBOSE);
@@ -244,9 +246,9 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
             filterFile = createFilterFile(baseDir);
             os = new FileOutputStream(filterFile);
             os.write(("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<workspaceFilter version=\"1.0\">\n")
-                    .getBytes("UTF-8"));
+                    .getBytes(StandardCharsets.UTF_8));
             for (String path : paths) {
-                os.write(("\t<filter root=\"" + path + "\"/>\n").getBytes("UTF-8"));
+                os.write(("\t<filter root=\"" + path + "\"/>\n").getBytes(StandardCharsets.UTF_8));
             }
 
             os.write(("</workspaceFilter>").getBytes());
@@ -309,7 +311,7 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
             public void run() {
                 log.debug("Starting input listener");
                 try {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
                     for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                         if (line.contains("[ERROR]") || (isError && (line.contains("caused by") || line
                                 .contains("at")))) {

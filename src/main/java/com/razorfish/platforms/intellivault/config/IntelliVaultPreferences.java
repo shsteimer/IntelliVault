@@ -74,14 +74,11 @@ public class IntelliVaultPreferences implements Serializable, Cloneable {
      *
      * @param repoName The name of the repository to put.
      * @param url      The url of the repository to put.
-     * @param username The username of the repository to put.
-     * @param password The password of the repository to put.
      * @return The newly put or updated {@link IntelliVaultCRXRepository}
-     * @see IntelliVaultPreferences#putRepositoryConfiguration(String, String, String, String)
+     * @see IntelliVaultPreferences#putRepositoryConfiguration(String, String)
      */
-    public IntelliVaultCRXRepository putRepositoryConfiguration(final String repoName, final String url,
-            final String username, final String password) {
-        IntelliVaultCRXRepository repo = new IntelliVaultCRXRepository(repoName, url, username, password);
+    public IntelliVaultCRXRepository putRepositoryConfiguration(final String repoName, final String url) {
+        IntelliVaultCRXRepository repo = new IntelliVaultCRXRepository(repoName, url);
         return putRepositoryConfiguration(repo);
     }
 
