@@ -9,21 +9,9 @@
       packaged with Adobe AEM/CQ.</p>
       <p>This plugin is largely based upon, and liberally borrows from, <a href="http://vaultclipse.sourceforge.net/">VaultClipse</a>
       which is a plugin for the Eclipse IDE for interacting with FileVault.</p>
-      <p>The plugin source can be found on <a href="https://github.com/shsteimer/IntelliVault">Github</a></p>
+      <p>The plugin source (as well as docs in the form of a README and bug reporting) can be found on <a href="https://github.com/shsteimer/IntelliVault">Github</a></p>
     ]]>
     </description>
-
-    <change-notes><![CDATA[
-     <ul>
-      <li>v0.9.1: Added logging of output to the console, removed extraneous dialog options.</li>
-      <li>v0.9.2: Fixing an issue where the temp directory isn't always deleted.</li>
-      <li>v0.9.3: Updates to plugin metadata.</li>
-      <li>v0.9.4: Merged PR from sdehandt; Added option to bypass message dialogs.  Also re-branded to Razorfish Platforms and added support for VLT 3.</li>
-      <li>v0.9.5: Fixed compile version to use JDK 1.6</li>
-      <li>v0.10.0: Added multiple repository profiles and ability to select from run dialogs.</li>
-      </ul>
-      ]]>
-    </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
     <idea-version since-build="145"/>

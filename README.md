@@ -6,37 +6,58 @@ This plugin is largely based upon, and liberally borrows from, [VaultClipse](htt
 
 The plugin can be found in the [JetBrains IDEA Plugin Repository](http://plugins.jetbrains.com/plugin/7328)
 
-## Supported product versions
+## Supported Versions
 
-The *IntelliVault* plugin is currently supported on the following Intellij products:
+The *IntelliVault* plugin is supported only with the following Intellij products:
 
-* Intellij IDEA 2016.1 Community/Ultimate
+* Intellij IDEA 2016.1+, Community/Ultimate Editions
 
 ## Installation
 
-To install the plugin using the Intellij built-in plugin management dialog, go to **Preferences** > **Plugins** > **Browse Repositories**, type *Intellivault* and click the **Install** button.
+To install the plugin using the Intellij built-in plugin management dialog by going to **IntelliJ IDEA** > **Preferences...** > **Plugins**.  From there search for "IntelliVault" and choose install.
 
 NOTE: If after installing the plugin and restarting the IDE you don't see the **IntelliVault** option under **Tools** then your version is most likely not supported.
 
+## Setting up Vault CLI
+
+IntelliVault uses the [Filevault CLI](https://docs.adobe.com/content/help/en/experience-manager-65/developing/devtools/ht-vlttool.html) under the covers to transfer content between IDEA and your AEM repository.  This is a hard dependency, and requires the user to download and unpack Filevault CLI v3.2+ before you can configure the plugin.
+
+You can download the FileVault CLI from https://repo1.maven.org/maven2/org/apache/jackrabbit/vault/vault-cli/. Be sure you download the binary artifact, version 3.2 or greater, e.g. https://repo1.maven.org/maven2/org/apache/jackrabbit/vault/vault-cli/3.4.2/vault-cli-3.4.2-bin.zip.  Once the download has completed, locate it in your Downloads directory and unpack it to the directory of your choice.
+
 ## Configuration
 
-IntelliVault uses the [Filevault](https://helpx.adobe.com/experience-manager/6-3/sites/developing/using/ht-vlttool.html) tool under the covers to transfer content between IDEA and your AEM repository.  This is a hard dependency, and requires unpacking Filevault before you can configure the plugin.
+Open the IntelliVault configuration dialog accessible via **IntelliJ IDEA** > **Preferences...** > **Tools** > **IntelliVault** and set the following properties.
 
-Locate `filevault.zip` or `filevault.tgz` inside of your AEM directory at `crx-quickstart/opt/filevault` and unpack that to any directory.
-
-Once you have unpacked **Filevault**, open the plugin configuration dialog accessible via **Preferences** > **Tools** > **IntelliVault** and set the following properties.
-
-- **Vault Directory**: Set this to the directory where you unpacked Filevault, ie. `/Users/myuser/dev/tools/vault/vault-cli-3.1.38/bin`
+- **Vault Directory**: Set this to the directory where you unpacked Filevault, ie. `/Users/myuser/dev/tools/vault/vault-cli-3.4.2/bin`
 - **Repository**: See `Multi-Repository Configuration` below
-- **Show Operation Confirmation Dialogs**: If checked, IntelliVault will prompt you to comfirm each operation.  Uncheck this to remove those confirmations
-- Other properties are optional and shouldn't require changes, but should be self-explanatory if/when changes are required
-
+- **Nitpicky Details** These properties are optional and shouldn't require changes under normal operation:
+    - **Temp Directory** Where the plugin will store working files. Defaults to the `java.io.tmpdir`
+    - **File Ignore Patterns** A comma delimited list of patterns to ignore for VLT operations
+    - **JCR Root Directory** The name of the directory within your project corresponding to the JCR Root Node
+    - **Show Operation Confirmation Dialogs** When checked, each operation will be confirmed before proceeding
+    - **Verbose VLT Output** Passes the verbose flag to VLT when performing operations
+    
 ### Multi-Repository Configuration
 
-IntelliVault now allows you to configure and manage multiple repository configurations. For each repo, you must set the following:
+IntelliVault allows you to configure and manage multiple repositories to operate against.
 
-- **Repository Name**: Friendly name for this repo.
+For each repo, you must set the following properties:
+
+- **Repository Name**: Unique, friendly name for this repo
 - **CRX Repository URL**: URL for the repo, i.e. http://localhost:4502
-- **Username/Password**: Credentials used for transferring, ie. admin/admin
+- **Username**: Username for connecting to the repository, ie. admin
+- **Password**: Password used for connecting to the repository, ie. admin
 
-If more than one repo is configured, you will be prompted to select a repo for each operation.  If only one repo exists, that repo will be used without any prompt.
+To edit an existing repository, select it from the drop down and edit the value as appropriate before clicking on the "Save Repo Config" button. Likewise, you can delete a repository configuration by selecting it from the drop down and then clicking on "Delete Repo Config" (you will be prompted to confirm).
+
+When you first install the plugin, it will load 2 pre-configured repositories:
+
+- an author instance running on localhost:4502, with the default credentials of admin/admin
+- a publish instance running on localhost:4503, with the default credentials of admin/admin
+
+## Usage
+
+The plugin contains only 2 actions, which operate based on the context. To invoke an import or export, right click on any directory which is a sub-directory of jcr_root (or equivalent if you have changed the JCR Root Directory setting). Find the IntelliVault menu, then select either "Pull from CRX..." to export, or "Push to CRX..." to import. If you have more than one repository configured, you will be prompted to select a repository. The last repository selected will always be the default selection for sub-sequent operations. Select the proper repository and click OK to proceed. Then confirm the operation (if Show Operation Confirmation Dialogs is set ot true). You may want to double check that the host, port, path, etc. are all correct before proceeding.
+
+After providing confirmation, Vault will proceed to do it's thing, importing/exporting the content as specified. If something goes wrong, [file a bug](https://github.com/shsteimer/IntelliVault/issues).
+
