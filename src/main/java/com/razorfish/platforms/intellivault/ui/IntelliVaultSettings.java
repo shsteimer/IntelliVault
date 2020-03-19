@@ -297,8 +297,14 @@ public class IntelliVaultSettings implements Configurable {
 
             IntelliVaultPreferencesService preferencesService = ServiceManager.getService(IntelliVaultPreferencesService.class);
             Credentials credentials = preferencesService.retrieveCredentials(repository.getName());
-            txtPassword.setText(credentials.getPasswordAsString());
-            txtUsername.setText(credentials.getUserName());
+            if(credentials!=null) {
+                txtPassword.setText(credentials.getPasswordAsString());
+                txtUsername.setText(credentials.getUserName());
+            } else {
+                //set as default if no credentials are found
+                txtPassword.setText(IntelliVaultConfigDefaults.REPO_PASSWORD);
+                txtUsername.setText(IntelliVaultConfigDefaults.REPO_USER);
+            }
         } else {
             txtRepoName.setText(IntelliVaultConfigDefaults.REPO_NAME);
             txtRepoUrl.setText(IntelliVaultConfigDefaults.REPO_URL);
