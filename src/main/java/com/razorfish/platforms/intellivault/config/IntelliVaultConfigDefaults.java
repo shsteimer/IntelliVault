@@ -29,7 +29,7 @@ public class IntelliVaultConfigDefaults {
     public static final boolean CONSOLE_LOG = false;
     public static final boolean DEBUG = false;
 
-    public static final boolean SHOW_MESSAGE_DIALOG = true;
+    public static final boolean SHOW_MESSAGE_DIALOG = false;
 
     public static final String VAULT_PATH = "";
 }
