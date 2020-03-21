@@ -20,6 +20,11 @@ dependencies {
 intellij {
     version '2019.3.3'
 }
+
+test {
+    useJUnit()
+}
+
 patchPluginXml {
     changeNotes """
       <ul>
