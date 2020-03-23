@@ -1,5 +1,9 @@
 package com.razorfish.platforms.intellivault.services.impl;
 
+import com.intellij.credentialStore.CredentialAttributes;
+import com.intellij.credentialStore.CredentialAttributesKt;
+import com.intellij.credentialStore.Credentials;
+import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
@@ -10,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
  * The preferences services handles storing and retrieving the configuration state of the vault plugin.
  */
 @State(name = "IntelliVaultPreferencesService", storages = {
-        @Storage("IntelliVaultPreferencesService.xml") })
+        @Storage("IntelliVaultPreferencesService.xml")})
 public class IntelliVaultPreferencesService implements PersistentStateComponent<IntelliVaultPreferences> {
 
     private IntelliVaultPreferences preferences;
@@ -34,11 +38,38 @@ public class IntelliVaultPreferencesService implements PersistentStateComponent<
     @Nullable
     @Override
     public IntelliVaultPreferences getState() {
-        return getPreferences();
+        IntelliVaultPreferences preferences = getPreferences();
+
+        return preferences;
+
     }
 
     @Override
     public void loadState(IntelliVaultPreferences preferences) {
         setPreferences(preferences);
     }
+
+    public Credentials retrieveCredentials(String repositoryName) {
+        CredentialAttributes credentialAttributes = createCredentialAttributes(repositoryName);
+
+        Credentials credentials = PasswordSafe.getInstance().get(credentialAttributes);
+        return credentials;
+    }
+
+    public void storeCredentials(String repositoryName, String username, String password) {
+        CredentialAttributes credentialAttributes = createCredentialAttributes(repositoryName);
+        Credentials credentials = new Credentials(username, password);
+        PasswordSafe.getInstance().set(credentialAttributes, credentials);
+    }
+
+    public void removeCredentials(String repositoryName) {
+        CredentialAttributes credentialAttributes = createCredentialAttributes(repositoryName);
+        PasswordSafe.getInstance().set(credentialAttributes, null);
+    }
+
+    private CredentialAttributes createCredentialAttributes(String key) {
+        return new CredentialAttributes(CredentialAttributesKt.generateServiceName("IntelliVault", key));
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.razorfish.platforms.intellivault.ui;
 
+import com.intellij.credentialStore.Credentials;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.Configurable;
@@ -28,10 +29,9 @@ import java.util.List;
  */
 public class IntelliVaultSettings implements Configurable {
 
-    private static final Logger log = Logger.getInstance(IntelliVaultSettings.class);
-
     public static final String FILE_IGNORE_PATTERN_SEPERATOR = ",";
     public static final String CURRENT_DIRECTORY_SYMBOL = ".";
+    private static final Logger log = Logger.getInstance(IntelliVaultSettings.class);
     private JPanel jPanel;
     private JComboBox comboProfileSelect;
     private JTextField txtVaultDir;
@@ -191,7 +191,11 @@ public class IntelliVaultSettings implements Configurable {
             int deleteChoice = Messages.showYesNoDialog("Are you sure you want to delete the repository configuration '" + selectedItem.toString() + "'?", "Delete Configuration", null);
             if (deleteChoice == Messages.YES) {
                 comboProfileSelect.removeItem(selectedItem);
-                userPreferences.removeRepositoryConfiguration(((IntelliVaultCRXRepository) selectedItem).getName());
+                String repoName = ((IntelliVaultCRXRepository) selectedItem).getName();
+                userPreferences.removeRepositoryConfiguration(repoName);
+
+                IntelliVaultPreferencesService preferencesService = ServiceManager.getService(IntelliVaultPreferencesService.class);
+                preferencesService.removeCredentials(repoName);
             }
         } else {
             log.warn("No option selected");
@@ -207,9 +211,7 @@ public class IntelliVaultSettings implements Configurable {
         // Setup the new repository.
         IntelliVaultCRXRepository newRepo = new IntelliVaultCRXRepository(
                 repoName,
-                txtRepoUrl.getText(),
-                txtUsername.getText(),
-                txtPassword.getText()
+                txtRepoUrl.getText()
         );
 
         // Check if this put request is replacing an old repository configuration.
@@ -227,11 +229,12 @@ public class IntelliVaultSettings implements Configurable {
             // This creates a new or overwrites an old. The above steps ensure renaming happens properly.
             newRepo = userPreferences.putRepositoryConfiguration(
                     repoName,
-                    txtRepoUrl.getText(),
-                    txtUsername.getText(),
-                    txtPassword.getText()
+                    txtRepoUrl.getText()
             );
         }
+
+        IntelliVaultPreferencesService preferencesService = ServiceManager.getService(IntelliVaultPreferencesService.class);
+        preferencesService.storeCredentials(repoName, txtUsername.getText(), txtPassword.getText());
 
         rebuildRepositoryComboBox(newRepo);
     }
@@ -291,8 +294,17 @@ public class IntelliVaultSettings implements Configurable {
         if (repository != null) {
             txtRepoName.setText(repository.getName());
             txtRepoUrl.setText(repository.getRepoUrl());
-            txtPassword.setText(repository.getPassword());
-            txtUsername.setText(repository.getUsername());
+
+            IntelliVaultPreferencesService preferencesService = ServiceManager.getService(IntelliVaultPreferencesService.class);
+            Credentials credentials = preferencesService.retrieveCredentials(repository.getName());
+            if(credentials!=null) {
+                txtPassword.setText(credentials.getPasswordAsString());
+                txtUsername.setText(credentials.getUserName());
+            } else {
+                //set as default if no credentials are found
+                txtPassword.setText(IntelliVaultConfigDefaults.REPO_PASSWORD);
+                txtUsername.setText(IntelliVaultConfigDefaults.REPO_USER);
+            }
         } else {
             txtRepoName.setText(IntelliVaultConfigDefaults.REPO_NAME);
             txtRepoUrl.setText(IntelliVaultConfigDefaults.REPO_URL);

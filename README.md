@@ -10,7 +10,7 @@ The plugin can be found in the [JetBrains IDEA Plugin Repository](http://plugins
 
 The *IntelliVault* plugin is supported only with the following Intellij products:
 
-* Intellij IDEA 2016.1+, Community/Ultimate Editions
+* Intellij IDEA 2019.1+, Community/Ultimate Editions
 
 ## Installation
 

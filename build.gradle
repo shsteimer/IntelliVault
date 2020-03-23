@@ -20,6 +20,11 @@ dependencies {
 intellij {
     version '2019.3.3'
 }
+
+test {
+    useJUnit()
+}
+
 patchPluginXml {
     changeNotes """
       <ul>
@@ -27,6 +32,8 @@ patchPluginXml {
               <ul>
                 <li>No longer suppoorts VLT &lt;v3.2, due to an imcompatability with IDEA running JDK11, which is the default.  Added active version detection during initialization to show an error if attempting to use an older version.</li>
                 <li>Modified plugin source to use the modern gradle build setup.</li>
+                <li>Changed how usernames and passwords are stored so that they are non longer in plain text.  This required removing support for versions of IDEA prior to 2019.1  Note: You may need to reset your repository username/passwords in the configuration due to this change.</li>
+                <li>Updated the github readme with much improved steps for how to setup and use the plugin.</li>
               </ul>
           </li>
           <li>v0.10.0: Added multiple repository profiles and ability to select from run dialogs.</li>
