@@ -16,12 +16,10 @@ import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
 import com.razorfish.platforms.intellivault.config.IntelliVaultOperationConfig;
 import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
 import com.razorfish.platforms.intellivault.services.IntelliVaultService;
+import com.razorfish.platforms.intellivault.vo.VaultOperationDirectory;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created with IntelliJ IDEA. User: sean.steimer Date: 3/13/13 Time: 8:54 PM To
- * change this template use File | Settings | File Templates.
- */
+
 public class IntelliVaultExportAction extends IntelliVaultAbstractAction {
 
     @Override

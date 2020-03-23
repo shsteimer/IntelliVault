@@ -2,13 +2,7 @@ package com.razorfish.platforms.intellivault.services;
 
 import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
 
-/**
- * Created with IntelliJ IDEA.
- * User: sean.steimer
- * Date: 3/17/13
- * Time: 9:06 AM
- * To change this template use File | Settings | File Templates.
- */
+
 public interface VaultInvokerService {
     /**
      * Execute a vault command, as specified by the arguments passed in.

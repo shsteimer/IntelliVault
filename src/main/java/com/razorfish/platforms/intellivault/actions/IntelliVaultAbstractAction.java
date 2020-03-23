@@ -19,16 +19,11 @@ import com.razorfish.platforms.intellivault.config.IntelliVaultPreferences;
 import com.razorfish.platforms.intellivault.services.IntelliVaultService;
 import com.razorfish.platforms.intellivault.services.impl.IntelliVaultPreferencesService;
 import com.razorfish.platforms.intellivault.ui.IntelliVaultRepositorySelector;
+import com.razorfish.platforms.intellivault.vo.VaultOperationDirectory;
 
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: sean.steimer
- * Date: 3/15/13
- * Time: 1:31 PM
- * To change this template use File | Settings | File Templates.
- */
+
 public abstract class IntelliVaultAbstractAction extends AnAction {
 
     private static final Logger log = Logger.getInstance(IntelliVaultAbstractAction.class);

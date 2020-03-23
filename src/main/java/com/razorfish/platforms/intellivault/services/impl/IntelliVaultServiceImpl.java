@@ -8,7 +8,7 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.ui.Messages;
-import com.razorfish.platforms.intellivault.actions.VaultOperationDirectory;
+import com.razorfish.platforms.intellivault.vo.VaultOperationDirectory;
 import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
 import com.razorfish.platforms.intellivault.config.IntelliVaultOperationConfig;
 import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;

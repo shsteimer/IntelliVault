@@ -1,15 +1,8 @@
-package com.razorfish.platforms.intellivault.actions;
+package com.razorfish.platforms.intellivault.vo;
 
 import com.intellij.psi.PsiDirectory;
 import com.razorfish.platforms.intellivault.utils.IntelliVaultConstants;
 
-/**
- * Created with IntelliJ IDEA.
- * User: sean.steimer
- * Date: 4/3/13
- * Time: 10:42 AM
- * To change this template use File | Settings | File Templates.
- */
 public class VaultOperationDirectory {
     private PsiDirectory psiDir;
     private String jcrPath;
@@ -56,17 +49,8 @@ public class VaultOperationDirectory {
         }
 
         String parentName = computePathFromPsiDirectory(psiDir.getParentDirectory(),rootDirectoryName);
+
         return parentName + IntelliVaultConstants.JCR_PATH_SEPERATOR + directoryName;
 
-        /*
-        StringBuilder path = new StringBuilder();
-        PsiDirectory curDir = psiDir;
-        while (!curDir.getName().equals(rootDirectoryName)) {
-            path.insert(0, "/" + curDir.getName());
-            curDir = curDir.getParentDirectory();
-        }
-
-        return path.toString();
-        */
     }
 }

@@ -6,10 +6,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import java.util.List;
 import java.util.regex.Pattern;
 
-/**
- * Created with IntelliJ IDEA. User: sean.steimer Date: 4/3/13 Time: 2:05 PM To change this template use File | Settings
- * | File Templates.
- */
 public class VaultImportFilter implements Filter<VirtualFile> {
     private List<String> ignorePatterns;
 

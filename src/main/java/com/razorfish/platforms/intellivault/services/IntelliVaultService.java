@@ -2,18 +2,12 @@ package com.razorfish.platforms.intellivault.services;
 
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.progress.ProgressIndicator;
-import com.razorfish.platforms.intellivault.actions.VaultOperationDirectory;
+import com.razorfish.platforms.intellivault.vo.VaultOperationDirectory;
 import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
 import com.razorfish.platforms.intellivault.config.IntelliVaultOperationConfig;
 import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
 
-/**
- * Created with IntelliJ IDEA.
- * User: sean.steimer
- * Date: 3/15/13
- * Time: 1:10 PM
- * To change this template use File | Settings | File Templates.
- */
+
 public interface IntelliVaultService {
 
     /**
