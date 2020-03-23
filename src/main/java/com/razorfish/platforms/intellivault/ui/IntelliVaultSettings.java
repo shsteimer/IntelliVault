@@ -20,13 +20,6 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: sean.steimer
- * Date: 3/15/13
- * Time: 12:41 PM
- * To change this template use File | Settings | File Templates.
- */
 public class IntelliVaultSettings implements Configurable {
 
     public static final String FILE_IGNORE_PATTERN_SEPERATOR = ",";
