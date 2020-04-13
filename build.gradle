@@ -21,6 +21,11 @@ intellij {
     version '2020.1'
 }
 
+publishPlugin {
+    token intellijPublishToken
+    channels 'alpha'
+}
+
 test {
     useJUnit()
 }
