@@ -16,7 +16,7 @@ The *IntelliVault* plugin is supported only with the following Intellij products
 
 To install the plugin using the Intellij built-in plugin management dialog by going to **IntelliJ IDEA** > **Preferences...** > **Plugins**.  From there search for "IntelliVault" and choose install.
 
-NOTE: If after installing the plugin and restarting the IDE you don't see the **IntelliVault** option under **Tools** then your version is most likely not supported.
+NOTE: If after installing the plugin and restarting the IDE you don't see the **IntelliVault** option under **Tools** then your version of IDEA is most likely not supported.
 
 ## Setting up Vault CLI
 
