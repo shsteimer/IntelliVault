@@ -11,3 +11,6 @@ build/*
 
 # intelliJ Files
 
+#local gradle props
+gradle.properties
+
