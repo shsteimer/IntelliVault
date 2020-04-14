@@ -1,10 +1,16 @@
+def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('yyyyMMddHHmmss')
+    return formattedDate
+}
+
 plugins {
     id 'java'
     id 'org.jetbrains.intellij' version '0.4.18'
 }
 
 group 'com.crownpartners.intellivault'
-version '0.11.0-SNAPSHOT'
+version '0.11.' + getDate() + '-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
