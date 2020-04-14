@@ -110,7 +110,6 @@ public class FileUtils {
                     } finally {
                         if (ins != null) {
                             ins.close();
-                            ;
                         }
                     }
                 }

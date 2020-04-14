@@ -26,6 +26,10 @@ publishPlugin {
     channels intellijPublishChannel
 }
 
+runIde {
+    jvmArgs '--add-exports', 'java.base/jdk.internal.vm=ALL-UNNAMED'
+}
+
 test {
     useJUnit()
 }
@@ -49,4 +53,13 @@ patchPluginXml {
           <li>v0.9.1: Added logging of output to the console, removed extraneous dialog options.</li>
       </ul>
       """
+    pluginDescription """
+    <p>A plugin for IntelliJ IDEA to interact with a CRX repository via the FileVault tool which is
+      packaged with Adobe AEM/CQ.</p>
+      <p>This plugin is largely based upon, and liberally borrows from, <a href="http://vaultclipse.sourceforge.net/">VaultClipse</a>
+      which is a plugin for the Eclipse IDE for interacting with FileVault.</p>
+      <p>The plugin source (as well as docs in the form of a README and bug reporting) can be found on <a href="https://github.com/shsteimer/IntelliVault">Github</a></p>
+    """
+    //please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    sinceBuild 184
 }

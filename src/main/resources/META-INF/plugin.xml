@@ -4,17 +4,6 @@
     <version>0.11.0-SNAPSHOT</version>
     <vendor url="https://github.com/shsteimer/IntelliVault">Sean Steimer</vendor>
 
-    <description><![CDATA[
-      <p>A plugin for IntelliJ IDEA to interact with a CRX repository via the FileVault tool which is
-      packaged with Adobe AEM/CQ.</p>
-      <p>This plugin is largely based upon, and liberally borrows from, <a href="http://vaultclipse.sourceforge.net/">VaultClipse</a>
-      which is a plugin for the Eclipse IDE for interacting with FileVault.</p>
-      <p>The plugin source (as well as docs in the form of a README and bug reporting) can be found on <a href="https://github.com/shsteimer/IntelliVault">Github</a></p>
-    ]]>
-    </description>
-
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="184"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
