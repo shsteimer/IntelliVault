@@ -8,7 +8,6 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.razorfish.platforms.intellivault.diff.FileComparator;
 import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
-import com.razorfish.platforms.intellivault.filter.Filter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.function.Predicate;
 
 /**
  * FileUtils is a set of static utility methods for interacting with files.
@@ -65,7 +65,7 @@ public class FileUtils {
      * @throws com.razorfish.platforms.intellivault.exceptions.IntelliVaultException if an error occurs during copy
      */
     public static void copyImportContents(File importBaseDir, PsiDirectory importDir, String path,
-            Filter<VirtualFile> filter) throws IntelliVaultException {
+            Predicate<VirtualFile> filter) throws IntelliVaultException {
         File copyRootDir = new File(
                 importBaseDir.getAbsolutePath() + File.separator + IntelliVaultConstants.JCR_ROOT + path
                         .replace(IntelliVaultConstants.JCR_PATH_SEPERATOR, File.separator));
@@ -92,12 +92,12 @@ public class FileUtils {
      *                    (not imported).
      * @throws IOException if an error occurs during copy
      */
-    private static void copyImportContents(File fsDir, VirtualFile virtualFile, Filter<VirtualFile> filter)
+    private static void copyImportContents(File fsDir, VirtualFile virtualFile, Predicate<VirtualFile> filter)
             throws IOException {
         VirtualFile[] contents = virtualFile.getChildren();
         for (int i = 0; i < contents.length; i++) {
             VirtualFile file = contents[i];
-            if (filter.allows(file)) {
+            if (filter.test(file)) {
                 if (file.isDirectory()) {
                     File newDir = new File(fsDir.getAbsolutePath() + File.separator + file.getName());
                     newDir.mkdir();

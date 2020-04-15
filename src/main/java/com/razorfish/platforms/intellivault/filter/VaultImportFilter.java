@@ -4,9 +4,10 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.vfs.VirtualFile;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public class VaultImportFilter implements Filter<VirtualFile> {
+public class VaultImportFilter implements Predicate<VirtualFile> {
     private List<String> ignorePatterns;
 
     private static final Logger log = Logger.getInstance(VaultImportFilter.class);
@@ -21,7 +22,7 @@ public class VaultImportFilter implements Filter<VirtualFile> {
     }
 
     @Override
-    public boolean allows(VirtualFile file) {
+    public boolean test(VirtualFile file) {
         for (String ignorePattern : ignorePatterns) {
             boolean matches = file.getName().equals(ignorePattern) ||
                     Pattern.compile(ignorePattern).matcher(file.getName()).matches();
