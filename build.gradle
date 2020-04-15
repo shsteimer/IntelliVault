@@ -66,6 +66,4 @@ patchPluginXml {
       which is a plugin for the Eclipse IDE for interacting with FileVault.</p>
       <p>The plugin source (as well as docs in the form of a README and bug reporting) can be found on <a href="https://github.com/shsteimer/IntelliVault">Github</a></p>
     """
-    //please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    sinceBuild 184
 }
