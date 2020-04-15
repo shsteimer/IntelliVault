@@ -33,7 +33,7 @@
             <reference ref="IntelliVault.Plugin.Export"/>
             <reference ref="IntelliVault.Plugin.Import"/>
 
-            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="after"
                           relative-to-action="ProjectViewPopupMenuRefactoringGroup"/>
         </group>
     </actions>

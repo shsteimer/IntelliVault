@@ -1,4 +1,4 @@
-def getDate() {
+def static getDate() {
     def date = new Date()
     def formattedDate = date.format('yyyyMMddHHmmss')
     return formattedDate
@@ -10,7 +10,7 @@ plugins {
 }
 
 group 'com.crownpartners.intellivault'
-version '0.11.' + getDate() + '-SNAPSHOT'
+version '0.11.0.' + getDate() + '-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -25,6 +25,7 @@ dependencies {
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     version intellijVersion
+    updateSinceUntilBuild false
 }
 
 publishPlugin {
