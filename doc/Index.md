@@ -18,7 +18,7 @@ You can download the FileVault CLI from https://repo1.maven.org/maven2/org/apach
 
 ## Configuration
 
-![Configuration Screenshot](images/configuration.png =500x)
+![Configuration Screenshot](images/configuration.png)
 
 Open the IntelliVault configuration dialog accessible via **IntelliJ IDEA** > **Preferences...** > **Tools** > **IntelliVault** and set the following properties.
 
