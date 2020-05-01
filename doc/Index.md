@@ -1,20 +1,22 @@
-## Supported Versions
+# Installation
 
-The *IntelliVault* plugin supports the following Intellij products:
-
-* Intellij IDEA 2019.1+, Community/Ultimate Editions
-
-## Installation
-
-To install the plugin using the Intellij built-in plugin management dialog by going to **IntelliJ IDEA** > **Preferences...** > **Plugins**.  From there search for "IntelliVault" and choose install.
+To install the plugin using the Intellij built-in plugin management dialog by going to **IntelliJ IDEA** > **Preferences...** > **Plugins**. From there search for "IntelliVault" and choose install.
 
 NOTE: If after installing the plugin and restarting the IDE you don't see the **IntelliVault** option under **Tools** then your version of IDEA is most likely not supported.
 
+## Supported Versions
+
+The *IntelliVault* plugin supports the following IntelliJ products:
+
+* IntelliJ IDEA 2019.1+, Community/Ultimate Editions
+
+#Setup and Usage
+
 ## Setting up Vault CLI
 
-IntelliVault uses the [Filevault CLI](https://docs.adobe.com/content/help/en/experience-manager-65/developing/devtools/ht-vlttool.html) under the covers to transfer content between IDEA and your AEM repository.  This is a hard dependency, and requires the user to download and unpack Filevault CLI v3.2+ before you can configure the plugin.
+IntelliVault uses the [Filevault CLI](https://docs.adobe.com/content/help/en/experience-manager-65/developing/devtools/ht-vlttool.html) under the covers to transfer content between IDEA and your AEM repository. This is a hard dependency, and requires the user to download and unpack Filevault CLI v3.2+ before you can configure the plugin.
 
-You can download the FileVault CLI from https://repo1.maven.org/maven2/org/apache/jackrabbit/vault/vault-cli/. Be sure you download the binary artifact, version 3.2 or greater, e.g. https://repo1.maven.org/maven2/org/apache/jackrabbit/vault/vault-cli/3.4.2/vault-cli-3.4.2-bin.zip.  Once the download has completed, locate it in your Downloads directory and unpack it to the directory of your choice.
+You can download the FileVault CLI from https://repo1.maven.org/maven2/org/apache/jackrabbit/vault/vault-cli/. Be sure you download the binary artifact, version 3.2 or greater, e.g. https://repo1.maven.org/maven2/org/apache/jackrabbit/vault/vault-cli/3.4.2/vault-cli-3.4.2-bin.zip. Once the download has completed, locate it in your Downloads directory and unpack it to the directory of your choice.
 
 ## Configuration
 
@@ -55,7 +57,7 @@ Starting with version 0.11, IntelliVault uses secure storage for repository cred
 
 ![Password Prompt Screenshot](images/password-prompt.png)
 
-You can manage how IntelliJ stores passwords at **IntelliJ IDEA** > **Preferences...** > **Appearance & Behavior** > **System Settings** > **Passwords**. See [here](https://www.jetbrains.org/intellij/sdk/docs/basics/persisting_sensitive_data.html) for more info.
+You can manage how IntelliJ stores passwords at **IntelliJ IDEA** > **Preferences...** > **Appearance & Behavior** > **System Settings** > **Passwords**. See [here](https://www.jetbrains.org/intellij/sdk/docs/basics/persisting_sensitive_data.html#storage) for more info.
 
 ## Usage
 
