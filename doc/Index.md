@@ -51,7 +51,7 @@ When you first install the plugin, it will load 2 pre-configured repositories:
 
 ## Usage
 
-The plugin contains only 2 actions, which operate based on the context. To invoke an import or export, right click on any directory which is a sub-directory of jcr_root (or equivalent if you have changed the JCR Root Directory setting). Find the IntelliVault menu, then select either "Pull from CRX..." to export, or "Push to CRX..." to import. 
+The plugin contains only 2 actions, which operate based on the context. To invoke an import or export, right click on any directory which is a sub-directory of jcr_root (or equivalent if you have changed the `JCR Root Directory` setting). Find the IntelliVault menu, then select either "Pull from CRX..." to export, or "Push to CRX..." to import. 
 
 ![Action Menu Screenshot](images/action-menu.png)
 
