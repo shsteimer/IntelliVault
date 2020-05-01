@@ -18,6 +18,8 @@ You can download the FileVault CLI from https://repo1.maven.org/maven2/org/apach
 
 ## Configuration
 
+![Configuration Screenshot](images/configuration.png =500x)
+
 Open the IntelliVault configuration dialog accessible via **IntelliJ IDEA** > **Preferences...** > **Tools** > **IntelliVault** and set the following properties.
 
 - **Vault Directory**: Set this to the directory where you unpacked Filevault, ie. `/Users/myuser/dev/tools/vault/vault-cli-3.4.2/bin`
@@ -59,4 +61,4 @@ Starting with version 0.11, IntelliVault uses secure storage for credentials.  Y
 
 ![Password Prompt Screenshot](images/password-prompt.png)
 
-You can manage how IntelliJ stores passwords at **Preferences** > **Appearance & Behavior** > **System Settings** > **Passwords**. See [here](https://www.jetbrains.org/intellij/sdk/docs/basics/persisting_sensitive_data.html) for more info.
+You can manage how IntelliJ stores passwords at **IntelliJ IDEA** > **Preferences...** > **Appearance & Behavior** > **System Settings** > **Passwords**. See [here](https://www.jetbrains.org/intellij/sdk/docs/basics/persisting_sensitive_data.html) for more info.

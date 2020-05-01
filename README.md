@@ -6,4 +6,4 @@ This plugin is largely based upon, and liberally borrows from, [VaultClipse](htt
 
 The plugin can be found in the [JetBrains IDEA Plugin Repository](http://plugins.jetbrains.com/plugin/7328)
 
-[See Documentation](docs/Index.md)
+[See Documentation](doc/Index.md)
