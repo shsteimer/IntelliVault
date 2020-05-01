@@ -1,5 +1,7 @@
 package com.razorfish.platforms.intellivault.actions;
 
+import com.intellij.execution.ui.ConsoleView;
+import com.intellij.icons.AllIcons;
 import com.intellij.ide.IdeView;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -12,7 +14,13 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.wm.RegisterToolWindowTask;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowAnchor;
+import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.PsiDirectory;
+import com.intellij.ui.content.Content;
+import com.intellij.ui.content.ContentFactory;
 import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
 import com.razorfish.platforms.intellivault.config.IntelliVaultOperationConfig;
 import com.razorfish.platforms.intellivault.config.IntelliVaultPreferences;
@@ -120,6 +128,32 @@ public abstract class IntelliVaultAbstractAction extends AnAction {
         }
 
         return null;
+    }
+
+    protected void createToolWindow(final Project project, ConsoleView console){
+        ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
+
+                //toolWindowManager.registerToolWindow(
+        String twId = "IntelliVault";
+        ToolWindow toolWindow = toolWindowManager.getToolWindow(twId);
+        if (toolWindow == null) {
+            RegisterToolWindowTask closable = RegisterToolWindowTask.closable(twId, AllIcons.Toolwindows.ToolWindowRun);
+            toolWindow = toolWindowManager.registerToolWindow(closable);
+        }
+
+        ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
+        Content content = contentFactory.createContent(console.getComponent(), "", false);
+
+        toolWindow.getContentManager().addContent(content);
+        toolWindow.getContentManager().setSelectedContent(content);
+
+        toolWindow.show(new Runnable() {
+            @Override
+            public void run() {
+                //nothing to do here
+            }
+        });
+
     }
 
     protected IntelliVaultService getVaultService() {

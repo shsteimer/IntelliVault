@@ -60,27 +60,7 @@ public class IntelliVaultImportAction extends IntelliVaultAbstractAction {
             TextConsoleBuilderFactory factory = TextConsoleBuilderFactory.getInstance();
             this.console = factory.createBuilder(project).getConsole();
 
-            ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
-            String twId = "IntelliVault";
-            ToolWindow toolWindow = toolWindowManager.getToolWindow(twId);
-            if (toolWindow == null) {
-                toolWindow = toolWindowManager.registerToolWindow(twId, true, ToolWindowAnchor.BOTTOM);
-            }
-
-
-            ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-            Content content = contentFactory.createContent(console.getComponent(), "", false);
-
-            toolWindow.getContentManager().addContent(content);
-            toolWindow.getContentManager().setSelectedContent(content);
-            //TODO toolWindow.setIcon();
-
-            toolWindow.show(new Runnable() {
-                @Override
-                public void run() {
-                    //To change body of implemented methods use File | Settings | File Templates.
-                }
-            });
+            createToolWindow(project, console);
         }
 
         @Override

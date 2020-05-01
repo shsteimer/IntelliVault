@@ -37,7 +37,7 @@ public class IntelliVaultExportAction extends IntelliVaultAbstractAction {
         private VaultOperationDirectory vaultOpDir;
         private IntelliVaultOperationConfig conf;
         private IntelliVaultCRXRepository repository;
-        private ConsoleView console;
+        private  ConsoleView console;
 
         public IntelliVaultExportTask(final VaultOperationDirectory vaultOpDir, final IntelliVaultOperationConfig conf,
                                       final IntelliVaultCRXRepository repository, final Project project) {
@@ -49,39 +49,17 @@ public class IntelliVaultExportAction extends IntelliVaultAbstractAction {
             this.vaultOpDir = vaultOpDir;
 
             TextConsoleBuilderFactory factory = TextConsoleBuilderFactory.getInstance();
-            this.console = factory.createBuilder(project).getConsole();
+            console = factory.createBuilder(getProject()).getConsole();
 
-            createToolWindow(project);
-
-        }
-
-        private void createToolWindow(final Project project){
-            ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
-            String twId = "IntelliVault";
-            ToolWindow toolWindow = toolWindowManager.getToolWindow(twId);
-            if (toolWindow == null) {
-                toolWindow = toolWindowManager.registerToolWindow(twId, true, ToolWindowAnchor.BOTTOM);
-            }
-
-            ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-            Content content = contentFactory.createContent(console.getComponent(), "", false);
-
-            toolWindow.getContentManager().addContent(content);
-            toolWindow.getContentManager().setSelectedContent(content);
-            //TODO toolWindow.setIcon();
-
-            toolWindow.show(new Runnable() {
-                @Override
-                public void run() {
-                    // Do nothing
-                }
-            });
+            createToolWindow(getProject(), console);
         }
 
         @Override
         public void run(@NotNull ProgressIndicator progressIndicator) {
             final IntelliVaultService vaultService = getVaultService();
             try {
+
+
                 vaultService.vaultExport(repository, conf, vaultOpDir, progressIndicator, console);
 
                 if (conf.showMessageDialogs()) {

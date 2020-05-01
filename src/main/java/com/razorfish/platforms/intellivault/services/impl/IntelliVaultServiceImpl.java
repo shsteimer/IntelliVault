@@ -7,6 +7,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.ui.Messages;
 import com.razorfish.platforms.intellivault.vo.VaultOperationDirectory;
 import com.razorfish.platforms.intellivault.config.IntelliVaultCRXRepository;
@@ -69,9 +70,10 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
             progressIndicator.setText2("Running VLT Export");
             final String[] args = prepareExportArgsList(repository, opConf, exportBaseDir, filterFile);
 
-            progressIndicator.startNonCancelableSection();
+
+            //progressIndicator.startNonCancelableSection();
             invokeVault(opConf, args, console);
-            progressIndicator.finishNonCancelableSection();
+           // progressIndicator.finishNonCancelableSection();
 
             progressIndicator.setText2("Copying export contents to IDEA");
 
@@ -129,9 +131,9 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
             progressIndicator.setText2("Running VLT Import");
             String[] args = prepareImportArgsList(repository, opConf, importBaseDir);
 
-            progressIndicator.startNonCancelableSection();
+            //progressIndicator.startNonCancelableSection();
             invokeVault(opConf, args, console);
-            progressIndicator.finishNonCancelableSection();
+            //progressIndicator.finishNonCancelableSection();
         } finally {
             if (!opConf.isDebug()) {
                 try {
