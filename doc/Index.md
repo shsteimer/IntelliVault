@@ -10,7 +10,7 @@ The *IntelliVault* plugin supports the following IntelliJ products:
 
 * IntelliJ IDEA 2019.1+, Community/Ultimate Editions
 
-#Setup and Usage
+# Setup and Usage
 
 ## Setting up Vault CLI
 
