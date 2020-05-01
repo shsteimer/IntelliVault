@@ -51,9 +51,23 @@ When you first install the plugin, it will load 2 pre-configured repositories:
 
 ## Usage
 
-The plugin contains only 2 actions, which operate based on the context. To invoke an import or export, right click on any directory which is a sub-directory of jcr_root (or equivalent if you have changed the JCR Root Directory setting). Find the IntelliVault menu, then select either "Pull from CRX..." to export, or "Push to CRX..." to import. If you have more than one repository configured, you will be prompted to select a repository. The last repository selected will always be the default selection for sub-sequent operations. Select the proper repository and click OK to proceed. Then confirm the operation (if Show Operation Confirmation Dialogs is set ot true). You may want to double check that the host, port, path, etc. are all correct before proceeding.
+The plugin contains only 2 actions, which operate based on the context. To invoke an import or export, right click on any directory which is a sub-directory of jcr_root (or equivalent if you have changed the JCR Root Directory setting). Find the IntelliVault menu, then select either "Pull from CRX..." to export, or "Push to CRX..." to import. 
+
+![Action Menu Screenshot](images/action-menu.png)
+
+If you have more than one repository configured, you will be prompted to select a repository. The last repository selected will always be the default selection for sub-sequent operations. Select the proper repository and click OK to proceed. 
+
+![Repository Selector Screenshot](images/repo-selector.png)
+
+Then confirm the operation (if `Show Operation Confirmation Dialogs` is set to true). You may want to double check that the host, port, path, etc. are all correct before proceeding.
+
+![Prompt Screenshot](images/export-prompt.png)
 
 After providing confirmation, Vault will proceed to do it's thing, importing/exporting the content as specified. If something goes wrong, [file a bug](https://github.com/shsteimer/IntelliVault/issues).
+
+### Keyboard Shortcuts
+
+IntelliVault can also be invoked by selecting the folder and using a keyboard shortcut. The default shortcuts are command+shift+I, X (Export) and command+shift+I, I (Import). These can be modified at  **IntelliJ IDEA** > **Preferences...** > **Keymap** > **Plugins** > **IntelliVault**.
 
 ### A Note About Credentials
 
