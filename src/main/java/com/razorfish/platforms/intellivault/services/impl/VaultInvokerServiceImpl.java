@@ -36,7 +36,7 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
         try {
             initVault(vaultDir);
 
-            log.info("executing vlt with params: " + Arrays.toString(args));
+            log.info("executing vlt with params: " + filterCredentials(args));
 
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
@@ -52,6 +52,28 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
         } catch (Exception e) {
             throw new IntelliVaultException(e);
         }
+    }
+
+    private String filterCredentials(String[] args) {
+        StringBuilder builder = new StringBuilder();
+
+        boolean credsNext=false;
+        for(String arg: args) {
+            if(credsNext) {
+                String[] split = arg.split(":");
+                String user = split[0];
+                String pass = "*****";
+
+                arg = user + ":" + pass;
+                credsNext=false;
+            } else if(arg.equals("--credentials")) {
+                credsNext=true;
+            }
+
+            builder.append(arg).append(" ");
+        }
+
+        return builder.toString();
     }
 
     @Override
@@ -81,17 +103,14 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
                 vaultDir += File.separator + LIB;
             }
 
+            log.info("loading vault libraries from " + vaultDir);
             List<URL> libList = new ArrayList<URL>();
             File libDir = new File(vaultDir.replace('/', File.separatorChar));
-            File[] libs = libDir.listFiles(new FilenameFilter() {
-
-                public boolean accept(File dir, String name) {
-                    return (name.endsWith(".jar")) || (name.endsWith(".zip"));
-                }
-            });
+            File[] libs = libDir.listFiles((dir, name) -> (name.endsWith(".jar")) || (name.endsWith(".zip")));
             if (libs != null) {
                 for (File lib : libs) {
                     try {
+                        log.debug("adding library: " + lib.getAbsolutePath());
                         libList.add(lib.toURI().toURL());
 
                         String libName = lib.getName();

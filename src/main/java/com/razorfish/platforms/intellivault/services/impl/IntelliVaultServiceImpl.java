@@ -31,6 +31,7 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
 
     public static final String CHECKOUT = "co";
     public static final String DEBUG = "debug";
+    public static final String INFO = "info";
     public static final String FILTER = "--filter";
     public static final String CREDENTIALS = "--credentials";
     public static final String VERBOSE = "--verbose";
@@ -172,10 +173,8 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
                                            final IntelliVaultOperationConfig opConf, final File importBaseDir) {
         List<String> argsList = new ArrayList<String>();
 
-        if (opConf.isDebug()) {
-            argsList.add(LOG_LEVEL);
-            argsList.add(DEBUG);
-        }
+        argsList.add(LOG_LEVEL);
+        argsList.add(opConf.isDebug() ? DEBUG : INFO);
 
         argsList.add(IMPORT);
 
@@ -203,10 +202,9 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
                                            final IntelliVaultOperationConfig opConf, final File exportBaseDir, final File filterFile) {
         List<String> argsList = new ArrayList<String>();
 
-        if (opConf.isDebug()) {
-            argsList.add(LOG_LEVEL);
-            argsList.add(DEBUG);
-        }
+        argsList.add(LOG_LEVEL);
+        argsList.add(opConf.isDebug() ? DEBUG : INFO);
+
 
         argsList.add(CHECKOUT);
 
@@ -312,7 +310,8 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
                 log.debug("Starting input listener");
                 try {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-                    for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+                    String line = reader.readLine();
+                    while (line!=null) {
                         if (line.contains("[ERROR]") || (isError && (line.contains("caused by") || line
                                 .contains("at")))) {
                             isError = true;
@@ -324,7 +323,7 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
                             console.print(line + NEW_LINE_CHAR, ConsoleViewContentType.NORMAL_OUTPUT);
                             log.info(line);
                         }
-
+                        line = reader.readLine();
                     }
                 } catch (IOException e) {
                     log.error("Exception reading output stream", e);
