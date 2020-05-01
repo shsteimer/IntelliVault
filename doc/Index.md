@@ -23,7 +23,7 @@ You can download the FileVault CLI from https://repo1.maven.org/maven2/org/apach
 Open the IntelliVault configuration dialog accessible via **IntelliJ IDEA** > **Preferences...** > **Tools** > **IntelliVault** and set the following properties.
 
 - **Vault Directory**: Set this to the directory where you unpacked Filevault, ie. `/Users/myuser/dev/tools/vault/vault-cli-3.4.2/bin`
-- **Repository**: See `Multi-Repository Configuration` below
+- **Repository**: See [Multi-Repository Configuration](#multi-repository-configuration) below
 - **Nitpicky Details** These properties are optional and shouldn't require changes under normal operation:
     - **Temp Directory** Where the plugin will store working files. Defaults to the `java.io.tmpdir`
     - **File Ignore Patterns** A comma delimited list of patterns to ignore for VLT operations
