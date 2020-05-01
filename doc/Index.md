@@ -49,6 +49,14 @@ When you first install the plugin, it will load 2 pre-configured repositories:
 - an author instance running on localhost:4502, with the default credentials of admin/admin
 - a publish instance running on localhost:4503, with the default credentials of admin/admin
 
+### A Note About Credentials
+
+Starting with version 0.11, IntelliVault uses secure storage for repository credentials. You may see occasional prompts to allow the storage and retrieval of these credentials, both while configuring the plugin, and while invoking operations.
+
+![Password Prompt Screenshot](images/password-prompt.png)
+
+You can manage how IntelliJ stores passwords at **IntelliJ IDEA** > **Preferences...** > **Appearance & Behavior** > **System Settings** > **Passwords**. See [here](https://www.jetbrains.org/intellij/sdk/docs/basics/persisting_sensitive_data.html) for more info.
+
 ## Usage
 
 The plugin contains only 2 actions, which operate based on the context. To invoke an import or export, right click on any directory which is a sub-directory of jcr_root (or equivalent if you have changed the `JCR Root Directory` setting). Find the IntelliVault menu, then select either "Pull from CRX..." to export, or "Push to CRX..." to import. 
@@ -68,11 +76,3 @@ After providing confirmation, Vault will proceed to do it's thing, importing/exp
 ### Keyboard Shortcuts
 
 IntelliVault can also be invoked by selecting the folder and using a keyboard shortcut. The default shortcuts are command+shift+I, X (Export) and command+shift+I, I (Import). These can be modified at  **IntelliJ IDEA** > **Preferences...** > **Keymap** > **Plugins** > **IntelliVault**.
-
-### A Note About Credentials
-
-Starting with version 0.11, IntelliVault uses secure storage for credentials.  You may see occasional prompts like the following to allow this storage.
-
-![Password Prompt Screenshot](images/password-prompt.png)
-
-You can manage how IntelliJ stores passwords at **IntelliJ IDEA** > **Preferences...** > **Appearance & Behavior** > **System Settings** > **Passwords**. See [here](https://www.jetbrains.org/intellij/sdk/docs/basics/persisting_sensitive_data.html) for more info.
