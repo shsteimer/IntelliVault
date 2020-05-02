@@ -92,7 +92,8 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
             }
 
         } catch (Exception e) {
-            throw new IntelliVaultException(e);
+            log.error("reflective exception invoking vlt.", e);
+            throw new IntelliVaultException("reflective exception invoking vlt.", e);
         }
     }
 

@@ -304,7 +304,8 @@ public class IntelliVaultServiceImpl implements IntelliVaultService {
         // TODO close logOut
         logOut = new PipedOutputStream(in);
 
-        System.setOut(new PrintStream(logOut));
+        PrintStream printStream = new PrintStream(logOut);
+        System.setOut(printStream);
 
         final Thread writerThread = new Thread() {
 
