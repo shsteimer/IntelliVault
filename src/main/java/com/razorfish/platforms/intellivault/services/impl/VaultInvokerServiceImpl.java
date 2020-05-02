@@ -5,14 +5,12 @@ import com.razorfish.platforms.intellivault.exceptions.IntelliVaultException;
 import com.razorfish.platforms.intellivault.services.VaultInvokerService;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,9 +40,53 @@ public class VaultInvokerServiceImpl implements VaultInvokerService {
 
             try {
                 Thread.currentThread().setContextClassLoader(vaultClassLoader);
+/*
+                VaultFsApp vltApp = new VaultFsApp();
+                Parser parser = new Parser();
+
+                Group appGroup = vltApp.getApplicationCLGroup();
+                parser.setGroup(appGroup);
+
+                CommandLine commandLine = parser.parse(args);
+
+                vltApp.prepare(commandLine);
+                vltApp.execute(commandLine);
+
+ */
+
                 Class<?> vltClass = Class.forName(VAULT3_CLASS, true, vaultClassLoader);
-                Method vltMethod = vltClass.getMethod(VAULT_METHOD, String[].class);
-                vltMethod.invoke(null, new Object[] { args });
+                Class<?> vltSuperClass = vltClass.getSuperclass();
+                Class<?> parserClass = Class.forName("org.apache.commons.cli2.commandline.Parser", true, vaultClassLoader);
+                Class<?> groupClass = Class.forName("org.apache.commons.cli2.Group", true, vaultClassLoader);
+                Class<?> commandLineClass = Class.forName("org.apache.commons.cli2.CommandLine", true, vaultClassLoader);
+
+
+                Constructor<?> vltAppCons = vltClass.getConstructor();
+                Object vltApp = vltAppCons.newInstance();
+
+                Constructor<?> parserCons = parserClass.getConstructor();
+                Object parser = parserCons.newInstance();
+
+                Method getApplicationCLGroup = vltSuperClass.getMethod("getApplicationCLGroup");
+                Object appGroup = getApplicationCLGroup.invoke(vltApp);
+
+                Method setGroup = parserClass.getMethod("setGroup", groupClass);
+                setGroup.invoke(parser, appGroup);
+
+                Method parse = parserClass.getMethod("parse", args.getClass());
+                Object commandLine = parse.invoke(parser, new Object[]{args});
+
+                Method init = vltClass.getDeclaredMethod("init");
+                init.setAccessible(true);
+                init.invoke(vltApp);
+
+                Method prepare = vltClass.getMethod("prepare", commandLineClass);
+                Method execute = vltClass.getMethod("execute", commandLineClass);
+
+                prepare.invoke(vltApp, commandLine);
+                execute.invoke(vltApp, commandLine);
+
+
             } finally {
                 Thread.currentThread().setContextClassLoader(cl);
             }

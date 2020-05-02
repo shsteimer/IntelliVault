@@ -20,6 +20,7 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    //implementation group: 'org.apache.jackrabbit.vault', name: 'vault-cli', version: '3.4.2'
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
