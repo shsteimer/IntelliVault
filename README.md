@@ -1,5 +1,13 @@
 # IntelliVault
 
+## Deprecation Notice
+
+This plugin is deprecated and no longer updated or supported. It's functionality is largely redundant to that of the [repo tool](https://github.com/Adobe-Marketing-Cloud/tools/tree/master/repo), which can be easily bound to keyboard shortcuts in Intellij by following the steps [here](https://github.com/Adobe-Marketing-Cloud/tools/tree/master/repo#integration-into-intellij). 
+
+You are strongly encouraged to stop using IntelliValut and use repo instead.
+
+## About
+
 A plugin for IntelliJ IDEA to interact with JCR repositories via the FileVault tool which is packaged with Adobe Experience Manager.
 
 This plugin is largely based upon, and liberally borrows from, [VaultClipse](http://vaultclipse.sourceforge.net/) which is a plugin for the Eclipse IDE for interacting with FileVault.
